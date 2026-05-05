@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coastal Marketing Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#F5EFE0;--sand-dark:#EDE4CE;--ocean:#1A4B6E;--ocean-mid:#2C6E9B;
+  --ocean-light:#A8C8E0;--seafoam:#3D9E8C;--seafoam-light:#B2DED8;
+  --coral:#D96B4F;--coral-light:#F2C4B8;--gold:#C9923A;--gold-light:#F0D9B5;
+  --ink:#1C2B35;--ink-mid:#3D5260;--ink-light:#7A9BAD;--white:#FDFAF4;
+  --radius:10px;--shadow:0 2px 16px rgba(26,75,110,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--sand);min-height:100vh}
+.header{background:var(--ocean);padding:22px 36px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.header h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--white);letter-spacing:-.3px}
+.header p{font-size:12px;color:var(--ocean-light);margin-top:4px;font-weight:300}
+.header-right{display:flex;align-items:center;gap:10px}
+.filter-note{font-size:11px;color:var(--ocean-light);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:6px 10px}
+.period-select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px;cursor:pointer;outline:none}
+.period-select option{background:var(--ocean)}
+.loc-tabs{display:flex;padding:0 36px;background:var(--ocean);border-bottom:3px solid var(--sand-dark)}
+.loc-tab{padding:12px 22px;font-size:13px;font-weight:500;color:var(--ocean-light);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .18s;white-space:nowrap}
+.loc-tab:hover{color:var(--white)}
+.loc-tab.active{color:var(--white);border-bottom-color:var(--seafoam);font-weight:600}
+.main{padding:28px 36px 80px}
+.import-bar{background:var(--white);border:1.5px dashed var(--ocean-light);border-radius:var(--radius);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.import-bar p{font-size:13px;color:var(--ink-mid);flex:1;min-width:200px}
+.import-bar strong{color:var(--ocean)}
+.step-pill{background:var(--sand);border:1px solid var(--sand-dark);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--ink-mid);display:inline-flex;align-items:center;gap:5px;margin:2px}
+.step-num{background:var(--ocean);color:white;width:17px;height:17px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.summary-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
+.scard{background:var(--white);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.scard-label{font-size:11px;font-weight:500;color:var(--ink-light);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.scard-val{font-size:26px;font-weight:600;color:var(--ink);line-height:1}
+.platform-section{margin-bottom:28px}
+.platform-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--sand-dark)}
+.platform-title{display:flex;align-items:center;gap:10px;font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink)}
+.badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:'DM Sans',sans-serif;letter-spacing:.4px;text-transform:uppercase}
+.badge-ig{background:var(--coral-light);color:var(--coral)}
+.badge-fb{background:var(--ocean-light);color:var(--ocean)}
+.badge-partner{background:var(--gold-light);color:var(--gold)}
+.badge-milestone{background:#F0D9B5;color:#7A6030}
+.badge-organic{font-size:11px;color:var(--seafoam);background:var(--seafoam-light);padding:3px 9px;border-radius:20px;font-family:'DM Sans',sans-serif;font-weight:500}
+.data-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;font-size:13px;margin-bottom:12px}
+.data-table thead tr{background:var(--ink);color:var(--white)}
+.data-table thead th{padding:11px 16px;text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.data-table thead th.metric{color:var(--ocean-light)}
+.data-table thead th.growth{color:var(--seafoam-light)}
+.data-table tbody tr{border-bottom:1px solid var(--sand-dark);transition:background .12s}
+.data-table tbody tr:last-child{border-bottom:none}
+.data-table tbody tr:hover{background:var(--sand)}
+.data-table td{padding:0}
+.data-table td input{width:100%;padding:12px 16px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;text-align:right}
+.data-table td input:focus{background:var(--gold-light)}
+.data-table td.row-label{padding:12px 16px;font-weight:500;white-space:nowrap}
+.data-table td.computed{padding:12px 16px;text-align:right;font-weight:600;white-space:nowrap}
+.data-table td.divider{border-left:2px solid var(--sand-dark) !important}
+.data-table thead th.divider{border-left:2px solid rgba(255,255,255,.15)}
+.eng{color:var(--seafoam)}
+.up{color:#2d8a4e}.down{color:var(--coral)}.flat{color:var(--ink-light)}
+.totals-row td{background:var(--sand);font-weight:600 !important}
+.notes-row{display:flex;gap:10px;align-items:flex-start;margin-top:8px}
+.notes-label{font-size:12px;color:var(--ink-light);padding-top:12px;white-space:nowrap}
+.notes-row textarea{flex:1;padding:10px 14px;border:1px solid var(--sand-dark);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--white);resize:vertical;min-height:60px;outline:none}
+.notes-row textarea:focus{border-color:var(--ocean-light)}
+.divider-line{border:none;border-top:1.5px solid var(--sand-dark);margin:4px 0 24px}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.chart-box{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+.chart-box h3{font-family:'DM Serif Display',serif;font-size:15px;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.chart-box h3 span{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink-light);font-weight:400}
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:80px}
+.bar-group{display:flex;gap:2px;align-items:flex-end;flex:1}
+.bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;transition:height .4s cubic-bezier(.4,0,.2,1);position:relative;cursor:pointer}
+.bar:hover::after{content:attr(data-tip);position:absolute;bottom:105%;left:50%;transform:translateX(-50%);background:var(--ink);color:white;font-size:11px;padding:3px 7px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:10}
+.bar.ig-prev{background:var(--coral)}.bar.ig-curr{background:var(--coral);opacity:.55}
+.bar.fb-prev{background:var(--ocean-mid)}.bar.fb-curr{background:var(--ocean-mid);opacity:.55}
+.bar.ige-prev{background:var(--seafoam)}.bar.ige-curr{background:var(--seafoam);opacity:.55}
+.bar.fbe-prev{background:var(--gold)}.bar.fbe-curr{background:var(--gold);opacity:.55}
+.chart-labels{display:flex;gap:4px;margin-top:6px}
+.chart-label{flex:1;text-align:center;font-size:10px;color:var(--ink-light)}
+.legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-mid)}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:4px}
+.post-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.post-rank-bar{background:var(--ocean);color:white;font-size:10px;font-weight:700;padding:6px 12px;display:flex;align-items:center;justify-content:space-between;letter-spacing:.5px;text-transform:uppercase}
+.eng-badge{background:var(--seafoam);color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+.post-body{padding:12px 14px;flex:1}
+.post-caption{font-size:12px;color:var(--ink);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--ink-light);margin-bottom:10px}
+.post-stats{display:flex;gap:8px}
+.stat-box{flex:1;background:var(--sand);border-radius:6px;padding:6px 8px;text-align:center}
+.stat-val{font-size:14px;font-weight:600;color:var(--ink)}
+.stat-lbl{font-size:10px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.4px}
+.post-link{display:block;padding:8px 14px;background:var(--sand);font-size:12px;color:var(--ocean-mid);text-decoration:none;border-top:1px solid var(--sand-dark);font-weight:500}
+.post-link:hover{background:var(--sand-dark)}
+.milestone-list{display:flex;flex-direction:column;gap:8px}
+.milestone-item{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 18px;display:flex;align-items:center;gap:14px;border-left:4px solid var(--gold)}
+.milestone-item.m500k{border-left-color:#9B4DCA}
+.milestone-item.m750k{border-left-color:#D4418E}
+.milestone-item.m1m{border-left-color:#E8372A}
+.m-badge{flex-shrink:0;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--gold-light);color:var(--gold);white-space:nowrap}
+.milestone-item.m500k .m-badge{background:#F0E0FF;color:#9B4DCA}
+.milestone-item.m750k .m-badge{background:#FFE0F2;color:#D4418E}
+.milestone-item.m1m .m-badge{background:#FFE0DE;color:#E8372A}
+.milestone-item.m50k{border-left-color:#3D9E8C}
+.milestone-item.m50k .m-badge{background:#B2DED8;color:#2A6E5E}
+.milestone-item.m25k{border-left-color:#7A9BAD}
+.milestone-item.m25k .m-badge{background:#D4E8F0;color:#2C5B70}
+.m-caption{flex:1;font-size:13px;color:var(--ink);line-height:1.4}
+.m-caption small{display:block;font-size:11px;color:var(--ink-light);margin-top:3px}
+.m-views{font-size:22px;font-weight:700;color:var(--ink);white-space:nowrap;text-align:right}
+.m-views small{font-size:11px;color:var(--ink-light);display:block}
+.m-link{font-size:12px;color:var(--ocean-mid);text-decoration:none;font-weight:500;flex-shrink:0}
+.m-link:hover{text-decoration:underline}
+.export-strip{position:fixed;bottom:0;left:0;right:0;background:var(--ink);padding:10px 36px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+.export-strip p{font-size:12px;color:var(--ink-light)}
+.export-btns{display:flex;gap:8px}
+.export-btn{padding:7px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:opacity .15s}
+.export-btn:hover{opacity:.85}
+.export-btn.primary{background:var(--seafoam);color:white}
+.export-btn.secondary{background:rgba(255,255,255,.12);color:var(--white)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Coastal Marketing Dashboard</h1>
+    <p>Organic content &middot; Reels, Feed &amp; Carousel posts &middot; Monthly reporting</p>
+  </div>
+  <div class="header-right">
+    <div class="filter-note">&#128269; Organic &amp; non-story posts only</div>
+    <select class="period-select" id="period-sel" onchange="updateLabel()">
+      <option value="Jan 2026">January 2026</option>
+      <option value="Feb 2026">February 2026</option>
+      <option value="Mar 2026">March 2026</option>
+      <option value="Apr 2026" selected>April 2026</option>
+      <option value="May 2026">May 2026</option>
+      <option value="Jun 2026">June 2026</option>
+      <option value="Jul 2026">July 2026</option>
+      <option value="Aug 2026">August 2026</option>
+      <option value="Sep 2026">September 2026</option>
+      <option value="Oct 2026">October 2026</option>
+      <option value="Nov 2026">November 2026</option>
+      <option value="Dec 2026">December 2026</option>
+    </select>
+  </div>
+</div>
+
+<div class="loc-tabs">
+  <button class="loc-tab active" onclick="switchTab(0,this)">&#128205; Wilmington</button>
+  <button class="loc-tab" onclick="switchTab(1,this)">&#127754; Wrightsville Beach</button>
+  <button class="loc-tab" onclick="switchTab(2,this)">&#127958; Carolina Beach</button>
+  <button class="loc-tab" onclick="switchTab(3,this)">&#128012; Kure Beach</button>
+</div>
+
+<div class="main" id="main"></div>
+
+<div class="export-strip">
+  <p id="export-lbl">Coastal Marketing &middot; April 2026 &middot; Organic feed posts only</p>
+  <div class="export-btns">
+    <button class="export-btn secondary" onclick="clearTab()">Clear current tab</button>
+    <button class="export-btn primary" onclick="exportCSV()">Export CSV</button>
+  </div>
+</div>
+
+<script>
+var LOCS = ['Wilmington','Wrightsville Beach','Carolina Beach','Kure Beach'];
+var currentLoc = 0;
+
+var store = {
+  'Wilmington': {
+    ig: { views:'241195', interactions:'9102', follows:'236', total_followers:'', prev_views:'308809', prev_interactions:'14852', prev_follows:'200', notes:'Apr 2026 - 8 own IG posts (wilmingtoncoast). Partner content in separate section below.' },
+    fb: { viewers:'869200', interactions:'12686', follows:'1290', total_followers:'', prev_viewers:'561718', prev_interactions:'11154', prev_follows:'783', notes:'Apr 2026 - 8 FB posts (Visit Wilmington, NC and Beaches). SITP filming post drove 436,706 unique viewers.' }
+  },
+  'Wrightsville Beach': {
+    ig: { views:'75272', interactions:'3000', follows:'54', total_followers:'', prev_views:'48039', prev_interactions:'1789', prev_follows:'17', notes:'Apr 2026 - 5 IG posts (wrightsvillenc).' },
+    fb: { viewers:'33656', interactions:'1518', follows:'22', total_followers:'', prev_viewers:'0', prev_interactions:'238', prev_follows:'1', notes:'Apr 2026 - 2 crossposted FB posts. No FB-only posts in March.' }
+  },
+  'Carolina Beach': {
+    ig: { views:'74851', interactions:'4007', follows:'54', total_followers:'', prev_views:'186783', prev_interactions:'10576', prev_follows:'171', notes:'Apr 2026 - 4 IG posts (carolinabeachnc). Dog surfing reel drove 28,392 views.' },
+    fb: { viewers:'44395', interactions:'790', follows:'48', total_followers:'', prev_viewers:'0', prev_interactions:'0', prev_follows:'0', notes:'Apr 2026 - 2 FB posts. No FB-only posts detected in March.' }
+  },
+  'Kure Beach': {
+    ig: { views:'76093', interactions:'1806', follows:'50', total_followers:'', prev_views:'105208', prev_interactions:'4585', prev_follows:'105', notes:'Apr 2026 - 5 IG posts (kurebeachnc).' },
+    fb: { viewers:'40632', interactions:'873', follows:'25', total_followers:'', prev_viewers:'0', prev_interactions:'0', prev_follows:'0', notes:'Apr 2026 - 3 crossposted FB posts. No FB-only posts detected in March.' }
+  }
+};
+
+var partners = [
+  { handle:'homewithjones_',    views:4105,  interactions:145,  total_followers:'' },
+  { handle:'checkwhatsgood',    views:30868, interactions:520,  total_followers:'' },
+  { handle:'lauramahachek',     views:33827, interactions:2766, total_followers:'' },
+  { handle:'raleating',         views:18763, interactions:879,  total_followers:'' },
+  { handle:'kidfriendlyphilly', views:13888, interactions:257,  total_followers:'' }
+];
+var partnerNotes = 'Apr 2026 - Tagged/collab partner content in Wilmington CVB suite. All Instagram.';
+
+var topPosts = {
+  'Wilmington': [
+    { rank:1, platform:'Instagram', type:'Reel', caption:'Listen to what the cast from The Summer I Turned Pretty had to say about us - Filming begins April 27 in the REAL Cousins Beach', views:39483, interactions:2765, eng:7.00, url:'https://www.instagram.com/wilmingtoncoast/' },
+    { rank:2, platform:'Instagram', type:'Reel', caption:'4 years went by fast, but graduation weekend here does not have to - Comment GRADS to get our graduation weekend guide', views:16639, interactions:628, eng:3.77, url:'https://www.instagram.com/wilmingtoncoast/' },
+    { rank:3, platform:'Instagram', type:'Carousel', caption:'Explore Wilmington, NC and our three island beaches most iconic filming locations this season', views:75383, interactions:2705, eng:3.59, url:'https://www.instagram.com/wilmingtoncoast/' }
+  ],
+  'Wrightsville Beach': [
+    { rank:1, platform:'Instagram', type:'Photo', caption:'A perfect place to listen to the turquoise waters of Wrightsville Beach is Johnnie Mercer Fishing Pier', views:10240, interactions:725, eng:7.08, url:'https://www.instagram.com/wrightsvillenc/' },
+    { rank:2, platform:'Instagram + Facebook', type:'Reel (Crossposted)', caption:'The one-week countdown from opening day of the Wrightsville Beach Farmers Market has begun', views:18221, interactions:1221, eng:6.70, url:'https://www.facebook.com/VisitWrightsvilleBeach/' },
+    { rank:3, platform:'Instagram', type:'Reel', caption:'Build confidence, learn to shred, and find your zen with RC Surf Instruction - The Kids Surf Camp', views:5003, interactions:193, eng:3.86, url:'https://www.instagram.com/wrightsvillenc/' }
+  ],
+  'Carolina Beach': [
+    { rank:1, platform:'Instagram', type:'Reel', caption:'Only 1 month away! Watch pups shred at Carolina Beach Pier on May 16 from 9:30 a.m. to 12:30 p.m.', views:28392, interactions:2133, eng:7.51, url:'https://www.instagram.com/carolinabeachnc/' },
+    { rank:2, platform:'Instagram', type:'Reel', caption:'In case you missed the 2026 Wings Over Carolina Beach Air Show, here is a recap - See you in 2027!', views:16828, interactions:771, eng:4.58, url:'https://www.instagram.com/carolinabeachnc/' },
+    { rank:3, platform:'Instagram', type:'Carousel', caption:'Did you know that Venus flytraps and pitcher plants will be blooming at Carolina Beach State Park?', views:22548, interactions:943, eng:4.18, url:'https://www.instagram.com/carolinabeachnc/' }
+  ],
+  'Kure Beach': [
+    { rank:1, platform:'Instagram', type:'Reel', caption:'Fresh seafood and no other plans sounds like a dream right now - #VisitKureBeachNC #KureBeachNC', views:13318, interactions:687, eng:5.16, url:'https://www.instagram.com/kurebeachnc/' },
+    { rank:2, platform:'Instagram + Facebook', type:'Reel (Crossposted)', caption:'No color grading or edits needed - #VisitKureBeachNC #KureBeachNC', views:10959, interactions:328, eng:2.99, url:'https://www.instagram.com/kurebeachnc/' },
+    { rank:3, platform:'Instagram + Facebook', type:'Carousel (Crossposted)', caption:'All paths lead here - #VisitKureBeachNC #KureBeachNC', views:25859, interactions:410, eng:1.59, url:'https://www.instagram.com/kurebeachnc/' }
+  ]
+};
+
+var milestones = {
+  'Wilmington': [
+    { month:'Apr 2026', views:701920, caption:'Filming for the new The Summer I Turned Pretty movie begins April 27 in the REAL Cousins Beach', platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Apr 2026', views:218773, caption:'Here is what the cast from The Summer I Turned Pretty had to say about us - Filming for the new SITP movie', platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Apr 2026', views:217911, caption:'Get ready to explore Wilmington, NC and our three island beaches most iconic filming locations', platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Mar 2026', views:375037, caption:'Just a baby and her friends at Airlie Gardens - Airlie Gardens baby turtles viral post', platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Mar 2026', views:176328, caption:'The 90s in Wilmington were a mood - Photos provided by Cape Fear Museum', platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Mar 2026', views:100702, caption:'Just a baby living her best life with her friends at Airlie Gardens - #VisitWilmington', platform:'Instagram', account:'wilmingtoncoast', url:'https://www.instagram.com/wilmingtoncoast/' }
+  ],
+  'Wrightsville Beach': [],
+  'Carolina Beach': [
+    { month:'Mar 2026', views:71555, caption:'PSA: 2 weeks from now, we will all be eating Britts Donuts by the sea - April 3 at 4pm', platform:'Instagram', account:'carolinabeachnc', url:'https://www.instagram.com/carolinabeachnc/' },
+    { month:'Mar 2026', views:36601, caption:'If you are feelin hungry in Carolina Beach, here is where you need to go', platform:'Instagram', account:'carolinabeachnc', url:'https://www.instagram.com/carolinabeachnc/' },
+    { month:'Mar 2026', views:32924, caption:'Britts Donuts reopens this Friday April 3 at 4pm - #CarolinaBeachNC #VisitCarolinaBeach', platform:'Instagram', account:'carolinabeachnc', url:'https://www.instagram.com/carolinabeachnc/' }
+  ],
+  'Kure Beach': []
+};
+
+function n(v){ return parseFloat(v)||0; }
+function fmt(v){
+  if(v===''||v===null||v===undefined) return '--';
+  v=parseFloat(v)||0;
+  if(v>=1000000) return (v/1000000).toFixed(1)+'M';
+  if(v>=1000) return (v/1000).toFixed(1)+'K';
+  return Math.round(v).toLocaleString();
+}
+function pct(v){ return (!v&&v!==0)||isNaN(v)||!isFinite(v)?'--':(+v).toFixed(2)+'%'; }
+function engCalc(views,ints){ var v=n(views),i=n(ints); return v>0?pct(i/v*100):'--'; }
+function delta(curr,prev){
+  var c=n(curr),p=n(prev);
+  if(!p&&!c) return {cls:'flat',txt:'--'};
+  if(!p) return {cls:'up',txt:'New'};
+  var d=(c-p)/p*100;
+  if(Math.abs(d)<0.05) return {cls:'flat',txt:'0.0%'};
+  return {cls:d>0?'up':'down', txt:(d>0?'+ ':'-')+Math.abs(d).toFixed(1)+'%'};
+}
+function milestoneInfo(views, loc){
+  // Wilmington keeps high thresholds; beach destinations use lower tiers
+  var isBeach = loc && loc !== 'Wilmington';
+  if(views>=1000000) return {label:'Trophy 1M+', cls:'m1m'};
+  if(views>=750000)  return {label:'750K+', cls:'m750k'};
+  if(views>=500000)  return {label:'500K+', cls:'m500k'};
+  if(views>=100000)  return {label:'100K+', cls:'m100k'};
+  if(isBeach && views>=50000) return {label:'50K+', cls:'m50k'};
+  if(isBeach && views>=25000) return {label:'25K+', cls:'m25k'};
+  return null;
+}
+function setEl(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
+function setClass(id,cls){ var e=document.getElementById(id); if(e) e.className='computed '+cls; }
+function setDelta(id,d){ setEl(id,d.txt); setClass(id,d.cls); }
+
+function recompute(){
+  var loc=LOCS[currentLoc], d=store[loc];
+  setEl('ig-eng', engCalc(d.ig.views,d.ig.interactions)); setClass('ig-eng','computed eng divider');
+  setEl('ig-prev-eng', engCalc(d.ig.prev_views,d.ig.prev_interactions)); setClass('ig-prev-eng','computed divider');
+  setDelta('ig-vg', delta(d.ig.views,d.ig.prev_views));
+  setDelta('ig-ig', delta(d.ig.interactions,d.ig.prev_interactions));
+  setDelta('ig-fg', delta(d.ig.follows,d.ig.prev_follows));
+  setEl('fb-eng', engCalc(d.fb.viewers,d.fb.interactions)); setClass('fb-eng','computed eng divider');
+  setEl('fb-prev-eng', engCalc(d.fb.prev_viewers,d.fb.prev_interactions)); setClass('fb-prev-eng','computed divider');
+  setDelta('fb-vg', delta(d.fb.viewers,d.fb.prev_viewers));
+  setDelta('fb-ig', delta(d.fb.interactions,d.fb.prev_interactions));
+  setDelta('fb-fg', delta(d.fb.follows,d.fb.prev_follows));
+  var pV=loc==='Wilmington'?partners.reduce(function(s,p){return s+p.views;},0):0;
+  var pI=loc==='Wilmington'?partners.reduce(function(s,p){return s+p.interactions;},0):0;
+  var tV=n(d.ig.views)+n(d.fb.viewers)+pV;
+  var tI=n(d.ig.interactions)+n(d.fb.interactions)+pI;
+  var tF=n(d.ig.follows)+n(d.fb.follows);
+  var fd=delta(tF,n(d.ig.prev_follows)+n(d.fb.prev_follows));
+  var tTF=n(d.ig.total_followers)+n(d.fb.total_followers);
+  setEl('sum-views',fmt(tV));
+  setEl('sum-int',fmt(tI));
+  setEl('sum-fol',fmt(tF)||'--');
+  setEl('sum-total-fol',tTF>0?fmt(tTF):'--');
+  setEl('sum-eng',tV>0?pct(tI/tV*100):'--');
+  updateCharts();
+}
+
+function updateCharts(){
+  var loc=LOCS[currentLoc],d=store[loc];
+  var igV=n(d.ig.views),fbV=n(d.fb.viewers),igPV=n(d.ig.prev_views),fbPV=n(d.fb.prev_viewers);
+  var igE=igV>0?n(d.ig.interactions)/igV*100:0;
+  var fbE=fbV>0?n(d.fb.interactions)/fbV*100:0;
+  var igPE=igPV>0?n(d.ig.prev_interactions)/igPV*100:0;
+  var fbPE=fbPV>0?n(d.fb.prev_interactions)/fbPV*100:0;
+  var maxV=Math.max(igV,fbV,igPV,fbPV,1);
+  var maxE=Math.max(igE,fbE,igPE,fbPE,1);
+  setBar('bIgPrev',igPV,maxV,fmt(igPV)); setBar('bIgCurr',igV,maxV,fmt(igV));
+  setBar('bFbPrev',fbPV,maxV,fmt(fbPV)); setBar('bFbCurr',fbV,maxV,fmt(fbV));
+  setBar('bIgEP',igPE,maxE,igPE.toFixed(1)+'%'); setBar('bIgEC',igE,maxE,igE.toFixed(1)+'%');
+  setBar('bFbEP',fbPE,maxE,fbPE.toFixed(1)+'%'); setBar('bFbEC',fbE,maxE,fbE.toFixed(1)+'%');
+}
+function setBar(id,val,max,tip){
+  var e=document.getElementById(id);
+  if(e){ e.style.height=Math.max(Math.round(val/max*76),2)+'px'; e.setAttribute('data-tip',tip||fmt(val)); }
+}
+
+function recomputePartner(){
+  var totV=0,totI=0,totF=0;
+  partners.forEach(function(p,i){
+    setEl('pt-eng-'+i, engCalc(p.views,p.interactions)); setClass('pt-eng-'+i,'computed eng divider');
+    totV+=p.views; totI+=p.interactions;
+    totF+=parseFloat(p.total_followers)||0;
+  });
+  setEl('pt-tv',fmt(totV)); setEl('pt-ti',fmt(totI));
+  setEl('pt-tf', totF>0?fmt(totF):'--');
+  setEl('pt-te',engCalc(totV,totI)); setClass('pt-te','computed eng divider');
+  recompute();
+}
+
+function setStoreVal(plt, field, val){
+  store[LOCS[currentLoc]][plt][field] = val;
+  recompute();
+}
+function setPartnerVal(idx, field, val){
+  if(field==='total_followers'){ partners[idx].total_followers=val; return; }
+  partners[idx][field] = parseFloat(val)||0;
+  recomputePartner();
+}
+function buildPage(){
+  var loc=LOCS[currentLoc], d=store[loc];
+
+  var html = '';
+
+  // Import bar
+  html += '<div class="import-bar"><p><strong>How to use:</strong> Enter data below or share your Meta Business Suite screen with Claude.</p><div>';
+  html += '<span class="step-pill"><span class="step-num">1</span>Filter: Organic only</span>';
+  html += '<span class="step-pill"><span class="step-num">2</span>Exclude Stories</span>';
+  html += '<span class="step-pill"><span class="step-num">3</span>Share screen with Claude</span>';
+  html += '</div></div>';
+
+  // Summary
+  html += '<div class="summary-row">';
+  html += '<div class="scard"><div class="scard-label">Total Views / Viewers</div><div class="scard-val" id="sum-views">--</div></div>';
+  html += '<div class="scard"><div class="scard-label">Total Interactions</div><div class="scard-val" id="sum-int">--</div></div>';
+  html += '<div class="scard"><div class="scard-label">Follows from Posts</div><div class="scard-val" id="sum-fol">--</div></div>';
+  html += '<div class="scard"><div class="scard-label">Total Followers (IG + FB)</div><div class="scard-val" id="sum-total-fol">--</div></div>';
+  html += '<div class="scard"><div class="scard-label">Overall Engagement Rate</div><div class="scard-val" id="sum-eng">--</div></div>';
+  html += '</div>';
+
+  // IG section
+  html += buildPlatformSection('ig', loc, d);
+  // FB section
+  html += buildPlatformSection('fb', loc, d);
+  // Partner section (Wilmington only)
+  if(loc==='Wilmington') html += buildPartnerSection();
+  // Charts
+  html += buildCharts();
+  // Top posts
+  html += buildTopPostsSection(loc);
+  // Milestones
+  html += buildMilestoneSection(loc);
+  html += '<div style="height:60px"></div>';
+
+  document.getElementById('main').innerHTML = html;
+  wireInputs(loc, d);
+  recompute();
+  if(loc==='Wilmington') recomputePartner();
+}
+
+function wireInputs(loc, d){
+  // Wire all platform input fields after DOM is built
+  ['ig','fb'].forEach(function(plt){
+    var isFB = plt==='fb';
+    var vField = isFB ? 'viewers' : 'views';
+    var pvField = isFB ? 'prev_viewers' : 'prev_views';
+    var pairs = [
+      [plt+'-view-input',  vField],
+      [plt+'-int-input',   'interactions'],
+      [plt+'-fol-input',   'follows'],
+      [plt+'-tfol-input',  'total_followers'],
+      [plt+'-pview-input', pvField],
+      [plt+'-pint-input',  'prev_interactions'],
+      [plt+'-pfol-input',  'prev_follows'],
+    ];
+    pairs.forEach(function(pair){
+      var el = document.getElementById(pair[0]);
+      if(!el) return;
+      el.addEventListener('input', function(){
+        store[LOCS[currentLoc]][plt][pair[1]] = this.value;
+        recompute();
+      });
+    });
+    // Notes textarea
+    var notesEl = document.getElementById(plt+'-notes');
+    if(notesEl) notesEl.addEventListener('input', function(){
+      store[LOCS[currentLoc]][plt].notes = this.value;
+    });
+  });
+}
+
+function buildPlatformSection(plt, loc, d){
+  var isIG = plt==='ig';
+  var isFB = plt==='fb';
+  var title = isIG ? 'Instagram' : 'Facebook';
+  var badgeCls = isIG ? 'badge-ig' : 'badge-fb';
+  var badgeTxt = isIG ? 'IG' : 'FB';
+  var iconSvg = isIG
+    ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>'
+    : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M15 8h-2a2 2 0 0 0-2 2v2H9v3h2v5h3v-5h2l1-3h-3v-2a1 1 0 0 1 1-1h2V8z"/></svg>';
+  var g = d[plt];
+  // For FB use viewers; for IG use views
+  var viewLabel = isFB ? 'Total Viewers' : 'Total Views';
+  var viewVal = isFB ? (g.viewers||'') : (g.views||'');
+  var prevViewVal = isFB ? (g.prev_viewers||'') : (g.prev_views||'');
+  var engNote = isFB ? '(interactions / viewers)' : '(interactions / views)';
+  var growthLabel = isFB ? 'Viewers vs Last Mo.' : 'Views vs Last Mo.';
+
+  var s = '';
+  s += '<div class="platform-section">';
+  s += '<div class="platform-header">';
+  s += '<div class="platform-title">'+iconSvg+' '+title+' <span class="badge '+badgeCls+'">'+badgeTxt+'</span></div>';
+  s += '<span class="badge-organic">Organic &middot; No stories</span>';
+  s += '</div>';
+  s += '<table class="data-table">';
+  s += '<thead><tr>';
+  s += '<th style="width:120px"></th>';
+  s += '<th class="metric">'+viewLabel+'</th>';
+  s += '<th class="metric">Interactions</th>';
+  s += '<th class="metric">Follows from Posts</th>';
+  s += '<th class="metric">Total Followers</th>';
+  s += '<th class="metric divider">Engagement Rate<br><span style="font-weight:300;font-size:10px">'+engNote+'</span></th>';
+  s += '<th class="growth divider">'+growthLabel+'</th>';
+  s += '<th class="growth">Interactions vs Last Mo.</th>';
+  s += '<th class="growth">Follows vs Last Mo.</th>';
+  s += '</tr></thead><tbody>';
+
+  // This month row — use data attributes, single event listener approach
+  var vId = plt+'-view-input';
+  var iId = plt+'-int-input';
+  var fId = plt+'-fol-input';
+  var tfId = plt+'-tfol-input';
+  var pvId = plt+'-pview-input';
+  var piId = plt+'-pint-input';
+  var pfId = plt+'-pfol-input';
+
+  s += '<tr>';
+  s += '<td class="row-label">This month</td>';
+  s += '<td><input id="'+vId+'" type="number" placeholder="0" value="'+viewVal+'"></td>';
+  s += '<td><input id="'+iId+'" type="number" placeholder="0" value="'+(g.interactions||'')+'"></td>';
+  s += '<td><input id="'+fId+'" type="number" placeholder="0" value="'+(g.follows||'')+'"></td>';
+  s += '<td><input id="'+tfId+'" type="number" placeholder="Enter total" value="'+(g.total_followers||'')+'"></td>';
+  s += '<td class="computed eng divider" id="'+plt+'-eng">--</td>';
+  s += '<td class="computed flat divider" id="'+plt+'-vg">--</td>';
+  s += '<td class="computed flat" id="'+plt+'-ig">--</td>';
+  s += '<td class="computed flat" id="'+plt+'-fg">--</td>';
+  s += '</tr>';
+
+  // Last month row
+  s += '<tr>';
+  s += '<td class="row-label" style="color:var(--ink-light);font-size:12px">Last month</td>';
+  s += '<td><input id="'+pvId+'" type="number" placeholder="0" value="'+prevViewVal+'" style="color:var(--ink-light)"></td>';
+  s += '<td><input id="'+piId+'" type="number" placeholder="0" value="'+(g.prev_interactions||'')+'" style="color:var(--ink-light)"></td>';
+  s += '<td><input id="'+pfId+'" type="number" placeholder="0" value="'+(g.prev_follows||'')+'" style="color:var(--ink-light)"></td>';
+  s += '<td style="padding:12px 16px;color:var(--ink-light);font-size:12px">--</td>';
+  s += '<td class="computed divider" style="color:var(--ink-light);font-size:12px" id="'+plt+'-prev-eng">--</td>';
+  s += '<td class="divider"></td><td></td><td></td>';
+  s += '</tr>';
+
+  s += '</tbody></table>';
+  s += '<div class="notes-row"><span class="notes-label">Notes:</span>';
+  s += '<textarea placeholder="Add context, top posts, anomalies..." id="'+plt+'-notes">'+(g.notes||'')+'</textarea>';
+  s += '</div></div>';
+  return s;
+}
+
+function buildPartnerSection(){
+  var s = '<div class="platform-section">';
+  s += '<div class="platform-header">';
+  s += '<div class="platform-title">';
+  s += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  s += ' Partner Content <span class="badge badge-partner">Tagged / Collab</span>';
+  s += '</div><span class="badge-organic">Instagram only</span></div>';
+  s += '<table class="data-table">';
+  s += '<thead><tr>';
+  s += '<th style="width:180px">Account</th>';
+  s += '<th class="metric">Total Views</th>';
+  s += '<th class="metric">Interactions</th>';
+  s += '<th class="metric">Total Followers</th>';
+  s += '<th class="metric divider">Engagement Rate</th>';
+  s += '</tr></thead><tbody>';
+  partners.forEach(function(p,i){
+    s += '<tr>';
+    s += '<td class="row-label" style="font-family:monospace;font-size:12px">@'+p.handle+'</td>';
+    s += '<td><input type="number" value="'+p.views+'" oninput="partners['+i+'].views=parseFloat(this.value)||0;recomputePartner()"></td>';
+    s += '<td><input type="number" value="'+p.interactions+'" oninput="partners['+i+'].interactions=parseFloat(this.value)||0;recomputePartner()"></td>';
+    s += '<td><input type="number" placeholder="Enter total" value="'+(p.total_followers||'')+'" oninput="partners['+i+'].total_followers=this.value"></td>';
+    s += '<td class="computed eng divider" id="pt-eng-'+i+'">--</td>';
+    s += '</tr>';
+  });
+  // Totals row
+  s += '<tr class="totals-row">';
+  s += '<td class="row-label">TOTAL</td>';
+  s += '<td class="computed" id="pt-tv">--</td>';
+  s += '<td class="computed" id="pt-ti">--</td>';
+  s += '<td class="computed" id="pt-tf" style="padding:12px 16px;text-align:right">--</td>';
+  s += '<td class="computed eng divider" id="pt-te">--</td>';
+  s += '</tr>';
+  s += '</tbody></table>';
+  s += '<div class="notes-row"><span class="notes-label">Notes:</span>';
+  s += '<textarea placeholder="Partner context..." oninput="partnerNotes=this.value">'+partnerNotes+'</textarea>';
+  s += '</div></div>';
+  return s;
+}
+
+function buildCharts(){
+  var s = '<div class="chart-row">';
+  s += '<div class="chart-box"><h3>Views: This vs Last month <span>IG &amp; FB</span></h3>';
+  s += '<div class="mini-chart">';
+  s += '<div class="bar-group"><div class="bar ig-prev" id="bIgPrev" style="height:4px" data-tip="--"></div><div class="bar ig-curr" id="bIgCurr" style="height:4px" data-tip="--"></div></div>';
+  s += '<div class="bar-group"><div class="bar fb-prev" id="bFbPrev" style="height:4px" data-tip="--"></div><div class="bar fb-curr" id="bFbCurr" style="height:4px" data-tip="--"></div></div>';
+  s += '</div><div class="chart-labels"><div class="chart-label">IG</div><div class="chart-label">FB</div></div>';
+  s += '<div class="legend">';
+  s += '<div class="legend-item"><div class="legend-dot" style="background:var(--coral)"></div>Last mo.</div>';
+  s += '<div class="legend-item"><div class="legend-dot" style="background:var(--coral);opacity:.5"></div>This mo. IG</div>';
+  s += '<div class="legend-item"><div class="legend-dot" style="background:var(--ocean-mid);opacity:.5"></div>This mo. FB</div>';
+  s += '</div></div>';
+  s += '<div class="chart-box"><h3>Engagement Rate: This vs Last month <span>IG &amp; FB</span></h3>';
+  s += '<div class="mini-chart">';
+  s += '<div class="bar-group"><div class="bar ige-prev" id="bIgEP" style="height:4px" data-tip="--"></div><div class="bar ige-curr" id="bIgEC" style="height:4px" data-tip="--"></div></div>';
+  s += '<div class="bar-group"><div class="bar fbe-prev" id="bFbEP" style="height:4px" data-tip="--"></div><div class="bar fbe-curr" id="bFbEC" style="height:4px" data-tip="--"></div></div>';
+  s += '</div><div class="chart-labels"><div class="chart-label">IG eng%</div><div class="chart-label">FB eng%</div></div>';
+  s += '<div class="legend">';
+  s += '<div class="legend-item"><div class="legend-dot" style="background:var(--seafoam)"></div>Last mo.</div>';
+  s += '<div class="legend-item"><div class="legend-dot" style="background:var(--seafoam);opacity:.5"></div>This mo. IG</div>';
+  s += '<div class="legend-item"><div class="legend-dot" style="background:var(--gold);opacity:.5"></div>This mo. FB</div>';
+  s += '</div></div>';
+  s += '</div>';
+  return s;
+}
+
+function buildTopPostsSection(loc){
+  var posts = topPosts[loc];
+  if(!posts||!posts.length) return '';
+  var s = '<hr class="divider-line">';
+  s += '<div class="platform-section">';
+  s += '<div class="platform-header">';
+  s += '<div class="platform-title">';
+  s += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>';
+  s += ' Top 3 Posts by Engagement Rate <span class="badge-organic">Apr 2026</span>';
+  s += '</div></div>';
+  s += '<div class="posts-grid">';
+  posts.forEach(function(p){
+    var linkLabel = p.platform.indexOf('Facebook')>=0 && p.platform.indexOf('Instagram')<0 ? 'Facebook' : 'Instagram';
+    s += '<div class="post-card">';
+    s += '<div class="post-rank-bar"><span>#'+p.rank+' Top Engagement</span><span class="eng-badge">'+p.eng.toFixed(2)+'%</span></div>';
+    s += '<div class="post-body">';
+    s += '<div class="post-caption">'+p.caption+'</div>';
+    s += '<div class="post-meta"><span>'+p.platform+'</span><span>'+p.type+'</span></div>';
+    s += '<div class="post-stats">';
+    s += '<div class="stat-box"><div class="stat-val">'+fmt(p.views)+'</div><div class="stat-lbl">Views</div></div>';
+    s += '<div class="stat-box"><div class="stat-val">'+p.interactions.toLocaleString()+'</div><div class="stat-lbl">Interactions</div></div>';
+    s += '</div></div>';
+    s += '<a class="post-link" href="'+p.url+'" target="_blank">View on '+linkLabel+' (account page) &#8599;</a>';
+    s += '</div>';
+  });
+  s += '</div></div>';
+  return s;
+}
+
+function buildMilestoneSection(loc){
+  var isBeach = loc !== 'Wilmington';
+  var thresholdLabel = isBeach ? '25K+ Views' : '100K+ Views';
+  // For beach destinations, check all posts against lower thresholds
+  var posts = [];
+  if(isBeach){
+    // Gather all posts for this location and filter by beach thresholds
+    var allPosts = topPosts[loc] || [];
+    allPosts.forEach(function(p){
+      if(p.views >= 25000) posts.push({views:p.views, caption:p.caption, platform:p.platform, account:p.account||'', url:p.url});
+    });
+    // Also check any manually stored milestones
+    (milestones[loc]||[]).forEach(function(m){ posts.push(m); });
+    // Deduplicate and sort
+    posts.sort(function(a,b){return b.views-a.views;});
+  } else {
+    posts = milestones[loc] || [];
+  }
+  if(!posts||!posts.length) return '';
+  var s = '<div class="platform-section">';
+  s += '<div class="platform-header">';
+  s += '<div class="platform-title">';
+  s += '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  s += ' Milestone Posts — Running List <span class="badge badge-milestone">'+thresholdLabel+'</span>';
+  s += '</div></div>';
+  // Table layout for running list
+  s += '<table class="data-table" style="margin-bottom:0">';
+  s += '<thead><tr>';
+  s += '<th style="width:90px">Month</th>';
+  s += '<th class="metric" style="width:100px">Milestone</th>';
+  s += '<th class="metric">Views</th>';
+  s += '<th style="width:140px">Platform</th>';
+  s += '<th style="width:60px">Link</th>';
+  s += '</tr></thead><tbody>';
+  posts.forEach(function(m){
+    var ml = milestoneInfo(m.views, loc);
+    if(!ml) return;
+    var vFmt = m.views>=1000000?(m.views/1000000).toFixed(2)+'M':(m.views/1000).toFixed(1)+'K';
+    s += '<tr>';
+    s += '<td class="row-label" style="font-size:12px;white-space:nowrap">'+(m.month||'--')+'</td>';
+    s += '<td><span class="m-badge" style="font-size:11px;padding:3px 8px;display:inline-block">'+ml.label+'</span></td>';
+    s += '<td class="computed" style="font-weight:700;color:var(--ink)">'+vFmt+'</td>';
+    s += '<td style="padding:10px 16px;font-size:12px;color:var(--ink-light)">'+m.platform+' &middot; '+m.account+'</td>';
+    s += '<td style="padding:10px 16px"><a class="m-link" href="'+m.url+'" target="_blank">View &#8599;</a></td>';
+    s += '</tr>';
+  });
+  s += '</tbody></table></div>';
+  return s;
+}
+
+function switchTab(idx,btn){
+  currentLoc=idx;
+  document.querySelectorAll('.loc-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  buildPage();
+}
+function updateLabel(){
+  var v=document.getElementById('period-sel').value;
+  document.getElementById('export-lbl').textContent='Coastal Marketing - '+v+' - Organic feed posts only';
+}
+function clearTab(){
+  var loc=LOCS[currentLoc];
+  store[loc]={
+    ig:{views:'',interactions:'',follows:'',prev_views:'',prev_interactions:'',prev_follows:'',notes:''},
+    fb:{views:'',interactions:'',follows:'',prev_views:'',prev_interactions:'',prev_follows:'',notes:''}
+  };
+  buildPage();
+}
+function exportCSV(){
+  var csv='Location,Platform,Period,Views,Interactions,Follows,Eng Rate,Views Growth,Int Growth,Follows Growth\n';
+  LOCS.forEach(function(loc){
+    ['ig','fb'].forEach(function(plt){
+      var d=store[loc][plt];
+      var eng=n(d.views)>0?(n(d.interactions)/n(d.views)*100).toFixed(2)+'%':'--';
+      var vd=delta(d.views,d.prev_views),id2=delta(d.interactions,d.prev_interactions),fd=delta(d.follows,d.prev_follows);
+      csv+='"'+loc+'","'+plt.toUpperCase()+'","This month",'+(d.views||0)+','+(d.interactions||0)+','+(d.follows||0)+',"'+eng+'","'+vd.txt+'","'+id2.txt+'","'+fd.txt+'"\n';
+      csv+='"'+loc+'","'+plt.toUpperCase()+'","Last month",'+(d.prev_views||0)+','+(d.prev_interactions||0)+','+(d.prev_follows||0)+',"--","--","--","--"\n';
+    });
+  });
+  partners.forEach(function(p){
+    var eng=p.views>0?(p.interactions/p.views*100).toFixed(2)+'%':'--';
+    csv+='"Wilmington (Partner)","IG","This month",'+p.views+','+p.interactions+',0,"'+eng+'","--","--","--"\n';
+  });
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='coastal-marketing-report.csv';
+  a.click();
+}
+
+buildPage();
+</script>
+</body>
+</html>
