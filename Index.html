@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wilmington and Beaches Content Marketing Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#F5EFE0;--sand-dark:#EDE4CE;--ocean:#1A4B6E;--ocean-mid:#2C6E9B;
+  --ocean-light:#A8C8E0;--seafoam:#3D9E8C;--seafoam-light:#B2DED8;
+  --coral:#D96B4F;--coral-light:#F2C4B8;--gold:#C9923A;--gold-light:#F0D9B5;
+  --ink:#1C2B35;--ink-mid:#3D5260;--ink-light:#7A9BAD;--white:#FDFAF4;
+  --radius:10px;--shadow:0 2px 16px rgba(26,75,110,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--sand);min-height:100vh}
+.header{background:var(--ocean);padding:22px 36px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.header h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--white);letter-spacing:-.3px}
+.header p{font-size:12px;color:var(--ocean-light);margin-top:4px;font-weight:300}
+.header-right{display:flex;align-items:center;gap:10px}
+.filter-note{font-size:11px;color:var(--ocean-light);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:6px 10px}
+.period-select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:6px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px;cursor:pointer;outline:none}
+.period-select option{background:var(--ocean)}
+.loc-tabs{display:flex;padding:0 36px;background:var(--ocean);border-bottom:3px solid var(--sand-dark);overflow-x:auto}
+.loc-tab{padding:12px 20px;font-size:13px;font-weight:500;color:var(--ocean-light);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.loc-tab:hover{color:var(--white)}
+.loc-tab.active{color:var(--white);border-bottom-color:var(--seafoam);font-weight:600}
+.main{padding:28px 36px 80px}
+
+/* Cards */
+.summary-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
+.scard{background:var(--white);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.scard-label{font-size:11px;font-weight:500;color:var(--ink-light);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.scard-val{font-size:24px;font-weight:600;color:var(--ink);line-height:1}
+
+/* Import bar */
+.import-bar{background:var(--white);border:1.5px dashed var(--ocean-light);border-radius:var(--radius);padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.import-bar p{font-size:13px;color:var(--ink-mid);flex:1;min-width:200px}
+.import-bar strong{color:var(--ocean)}
+.step-pill{background:var(--sand);border:1px solid var(--sand-dark);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--ink-mid);display:inline-flex;align-items:center;gap:5px;margin:2px}
+.step-num{background:var(--ocean);color:white;width:17px;height:17px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Platform sections */
+.platform-section{margin-bottom:28px}
+.platform-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--sand-dark)}
+.platform-title{display:flex;align-items:center;gap:10px;font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink)}
+.badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:'DM Sans',sans-serif;letter-spacing:.4px;text-transform:uppercase}
+.badge-ig{background:var(--coral-light);color:var(--coral)}
+.badge-fb{background:var(--ocean-light);color:var(--ocean)}
+.badge-partner{background:var(--gold-light);color:var(--gold)}
+.badge-milestone{background:#F0D9B5;color:#7A6030}
+.badge-organic{font-size:11px;color:var(--seafoam);background:var(--seafoam-light);padding:3px 9px;border-radius:20px;font-family:'DM Sans',sans-serif;font-weight:500}
+
+/* Tables */
+.data-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;font-size:13px;margin-bottom:12px}
+.data-table thead tr{background:var(--ink);color:var(--white)}
+.data-table thead th{padding:11px 16px;text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.data-table thead th.metric{color:var(--ocean-light)}
+.data-table thead th.growth{color:var(--seafoam-light)}
+.data-table thead th.divider{border-left:2px solid rgba(255,255,255,.15)}
+.data-table tbody tr{border-bottom:1px solid var(--sand-dark);transition:background .12s}
+.data-table tbody tr:last-child{border-bottom:none}
+.data-table tbody tr:hover{background:var(--sand)}
+.data-table td{padding:0}
+.data-table td input{width:100%;padding:12px 16px;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;text-align:right}
+.data-table td input:focus{background:var(--gold-light)}
+.data-table td.row-label{padding:12px 16px;font-weight:500;white-space:nowrap}
+.data-table td.computed{padding:12px 16px;text-align:right;font-weight:600;white-space:nowrap}
+.data-table td.divider{border-left:2px solid var(--sand-dark) !important}
+.eng{color:var(--seafoam)}
+.up{color:#2d8a4e}.down{color:var(--coral)}.flat{color:var(--ink-light)}
+.totals-row td{background:var(--sand) !important;font-weight:700 !important}
+.notes-row{display:flex;gap:10px;align-items:flex-start;margin-top:8px}
+.notes-label{font-size:12px;color:var(--ink-light);padding-top:12px;white-space:nowrap}
+.notes-row textarea{flex:1;padding:10px 14px;border:1px solid var(--sand-dark);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--white);resize:vertical;min-height:60px;outline:none}
+.notes-row textarea:focus{border-color:var(--ocean-light)}
+.divider-line{border:none;border-top:1.5px solid var(--sand-dark);margin:4px 0 24px}
+
+/* Charts */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;max-width:640px}
+.chart-box{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;max-width:300px}
+.chart-box h3{font-family:'DM Serif Display',serif;font-size:15px;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.chart-box h3 span{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink-light);font-weight:400}
+.mini-chart{display:flex;align-items:flex-end;gap:12px;height:80px;width:120px}
+.bar-group{display:flex;gap:3px;align-items:flex-end;width:48px;flex-shrink:0}
+.bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;transition:height .4s cubic-bezier(.4,0,.2,1);position:relative;cursor:pointer}
+.bar:hover::after{content:attr(data-tip);position:absolute;bottom:105%;left:50%;transform:translateX(-50%);background:var(--ink);color:white;font-size:11px;padding:3px 7px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:10}
+.bar.ig-prev{background:var(--coral)}.bar.ig-curr{background:var(--coral);opacity:.55}
+.bar.fb-prev{background:var(--ocean-mid)}.bar.fb-curr{background:var(--ocean-mid);opacity:.55}
+.bar.ige-prev{background:var(--seafoam)}.bar.ige-curr{background:var(--seafoam);opacity:.55}
+.bar.fbe-prev{background:var(--gold)}.bar.fbe-curr{background:var(--gold);opacity:.55}
+.chart-labels{display:flex;gap:12px;margin-top:6px;width:120px}
+.chart-label{width:48px;flex-shrink:0;text-align:center;font-size:10px;color:var(--ink-light)}
+.legend{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-mid)}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* Top posts */
+.posts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:4px}
+.post-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.post-rank-bar{background:var(--ocean);color:white;font-size:10px;font-weight:700;padding:6px 12px;display:flex;align-items:center;justify-content:space-between;letter-spacing:.5px;text-transform:uppercase}
+.eng-badge{background:var(--seafoam);color:white;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+.post-body{padding:12px 14px;flex:1}
+.post-caption{font-size:12px;color:var(--ink);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--ink-light);margin-bottom:10px}
+.post-stats{display:flex;gap:8px}
+.stat-box{flex:1;background:var(--sand);border-radius:6px;padding:6px 8px;text-align:center}
+.stat-val{font-size:14px;font-weight:600;color:var(--ink)}
+.stat-lbl{font-size:10px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.4px}
+.post-link{display:block;padding:8px 14px;background:var(--sand);font-size:12px;color:var(--ocean-mid);text-decoration:none;border-top:1px solid var(--sand-dark);font-weight:500}
+.post-link:hover{background:var(--sand-dark)}
+
+/* Milestones */
+.milestone-item{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border-left:4px solid var(--gold)}
+.milestone-item.m500k{border-left-color:#9B4DCA}
+.milestone-item.m750k{border-left-color:#D4418E}
+.milestone-item.m1m{border-left-color:#E8372A}
+.milestone-item.m50k{border-left-color:var(--seafoam)}
+.milestone-item.m25k{border-left-color:var(--ink-light)}
+.m-badge{flex-shrink:0;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;background:var(--gold-light);color:var(--gold);white-space:nowrap;display:inline-block}
+.milestone-item.m500k .m-badge{background:#F0E0FF;color:#9B4DCA}
+.milestone-item.m750k .m-badge{background:#FFE0F2;color:#D4418E}
+.milestone-item.m1m .m-badge{background:#FFE0DE;color:#E8372A}
+.milestone-item.m50k .m-badge{background:var(--seafoam-light);color:#2A6E5E}
+.milestone-item.m25k .m-badge{background:#D4E8F0;color:#2C5B70}
+.m-link{font-size:12px;color:var(--ocean-mid);text-decoration:none;font-weight:500}
+.m-link:hover{text-decoration:underline}
+
+/* AC tab */
+.ac-section-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--sand-dark);display:flex;align-items:center;gap:10px}
+.ac-campaign-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;font-size:13px;margin-bottom:12px}
+.ac-campaign-table thead tr{background:var(--ink);color:var(--white)}
+.ac-campaign-table thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.ac-campaign-table thead th.metric{color:var(--ocean-light)}
+.ac-campaign-table tbody tr{border-bottom:1px solid var(--sand-dark)}
+.ac-campaign-table tbody tr:last-child{border-bottom:none}
+.ac-campaign-table tbody tr:hover{background:var(--sand)}
+.ac-campaign-table td{padding:10px 14px;font-size:13px;vertical-align:middle}
+.ac-campaign-table td.name{font-weight:500;color:var(--ink);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ac-campaign-table td.metric{text-align:right}
+.good{color:#2d8a4e;font-weight:600;text-align:right}
+.warn{color:var(--gold);font-weight:600;text-align:right}
+.bad{color:var(--coral);font-weight:600;text-align:right}
+.ac-auto-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:20px}
+.ac-auto-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;border-left:3px solid var(--ocean-mid)}
+.ac-auto-card-name{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-stat{font-size:22px;font-weight:600;color:var(--ink);line-height:1}
+.ac-stat-lbl{font-size:11px;color:var(--ink-light);margin-top:3px}
+
+/* Export strip */
+.export-strip{position:fixed;bottom:0;left:0;right:0;background:var(--ink);padding:10px 36px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+.export-strip p{font-size:12px;color:var(--ink-light)}
+.export-btns{display:flex;gap:8px}
+.export-btn{padding:7px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:opacity .15s}
+.export-btn:hover{opacity:.85}
+.export-btn.primary{background:var(--seafoam);color:white}
+.export-btn.secondary{background:rgba(255,255,255,.12);color:var(--white)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Wilmington and Beaches Content Marketing Dashboard</h1>
+    <p>Organic content &middot; Reels, Feed &amp; Carousel posts &middot; Monthly reporting</p>
+  </div>
+  <div class="header-right">
+    <div class="filter-note">&#128269; Organic &amp; non-story posts only</div>
+    <select class="period-select" id="period-sel" onchange="updateLabel()">
+      <option value="Jan 2026">January 2026</option>
+      <option value="Feb 2026">February 2026</option>
+      <option value="Mar 2026">March 2026</option>
+      <option value="Apr 2026" selected>April 2026</option>
+      <option value="May 2026">May 2026</option>
+      <option value="Jun 2026">June 2026</option>
+      <option value="Jul 2026">July 2026</option>
+      <option value="Aug 2026">August 2026</option>
+      <option value="Sep 2026">September 2026</option>
+      <option value="Oct 2026">October 2026</option>
+      <option value="Nov 2026">November 2026</option>
+      <option value="Dec 2026">December 2026</option>
+    </select>
+  </div>
+</div>
+
+<div class="loc-tabs">
+  <button class="loc-tab active" onclick="switchTab(0,this)">&#128247; Social Media</button>
+  <button class="loc-tab" onclick="switchTab(1,this)">&#128231; Email</button>
+</div>
+
+<div class="main" id="main"></div>
+
+<div class="export-strip">
+  <p id="export-lbl">Coastal Marketing &middot; April 2026 &middot; Organic feed posts only</p>
+  <div class="export-btns">
+    <button class="export-btn secondary" onclick="clearTab()">Clear current tab</button>
+    <button class="export-btn primary" onclick="exportCSV()">Export CSV</button>
+  </div>
+</div>
+
+<script>
+var LOCS = ['Wilmington','Wrightsville Beach','Carolina Beach','Kure Beach'];
+var currentLoc = 0;
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+var store = {
+  'Wilmington': {
+    ig: { views:'241195', interactions:'9102', follows:'236', total_followers:'', prev_views:'308809', prev_interactions:'14852', prev_follows:'200', notes:'Apr 2026 - 8 own IG posts (wilmingtoncoast). Partner content in separate section below.' },
+    fb: { viewers:'869200', interactions:'12686', follows:'1290', total_followers:'', prev_viewers:'561718', prev_interactions:'11154', prev_follows:'783', notes:'Apr 2026 - 8 FB posts (Visit Wilmington, NC and Beaches). SITP filming post drove 436,706 unique viewers.' }
+  },
+  'Wrightsville Beach': {
+    ig: { views:'75272', interactions:'3000', follows:'54', total_followers:'', prev_views:'48039', prev_interactions:'1789', prev_follows:'17', notes:'Apr 2026 - 5 IG posts (wrightsvillenc).' },
+    fb: { viewers:'33656', interactions:'1518', follows:'22', total_followers:'', prev_viewers:'0', prev_interactions:'238', prev_follows:'1', notes:'Apr 2026 - 2 crossposted FB posts. No FB-only posts in March.' }
+  },
+  'Carolina Beach': {
+    ig: { views:'74851', interactions:'4007', follows:'54', total_followers:'', prev_views:'186783', prev_interactions:'10576', prev_follows:'171', notes:'Apr 2026 - 4 IG posts (carolinabeachnc). Dog surfing reel drove 28,392 views.' },
+    fb: { viewers:'44395', interactions:'790', follows:'48', total_followers:'', prev_viewers:'0', prev_interactions:'0', prev_follows:'0', notes:'Apr 2026 - 2 FB posts. No FB-only posts detected in March.' }
+  },
+  'Kure Beach': {
+    ig: { views:'76093', interactions:'1806', follows:'50', total_followers:'', prev_views:'105208', prev_interactions:'4585', prev_follows:'105', notes:'Apr 2026 - 5 IG posts (kurebeachnc).' },
+    fb: { viewers:'40632', interactions:'873', follows:'25', total_followers:'', prev_viewers:'0', prev_interactions:'0', prev_follows:'0', notes:'Apr 2026 - 3 crossposted FB posts. No FB-only posts detected in March.' }
+  }
+};
+
+var partners = [
+  { handle:'homewithjones_',    views:4105,  interactions:145,  total_followers:'' },
+  { handle:'checkwhatsgood',    views:30868, interactions:520,  total_followers:'' },
+  { handle:'lauramahachek',     views:33827, interactions:2766, total_followers:'' },
+  { handle:'raleating',         views:18763, interactions:879,  total_followers:'' },
+  { handle:'kidfriendlyphilly', views:13888, interactions:257,  total_followers:'' }
+];
+var partnerNotes = 'Apr 2026 - Tagged/collab partner content in Wilmington CVB suite. All Instagram.';
+
+var topPosts = {
+  'Wilmington': [
+    { rank:1, platform:'Instagram', type:'Reel', caption:'Listen to what the cast from The Summer I Turned Pretty had to say about us - Filming begins April 27 in the REAL Cousins Beach', views:39483, interactions:2765, eng:7.00, url:'https://www.instagram.com/wilmingtoncoast/' },
+    { rank:2, platform:'Instagram', type:'Reel', caption:'4 years went by fast, but graduation weekend here does not have to - Comment GRADS to get our graduation weekend guide', views:16639, interactions:628, eng:3.77, url:'https://www.instagram.com/wilmingtoncoast/' },
+    { rank:3, platform:'Instagram', type:'Carousel', caption:'Explore Wilmington, NC and our three island beaches most iconic filming locations this season', views:75383, interactions:2705, eng:3.59, url:'https://www.instagram.com/wilmingtoncoast/' }
+  ],
+  'Wrightsville Beach': [
+    { rank:1, platform:'Instagram', type:'Photo', caption:'A perfect place to listen to the turquoise waters of Wrightsville Beach is Johnnie Mercer Fishing Pier', views:10240, interactions:725, eng:7.08, url:'https://www.instagram.com/wrightsvillenc/' },
+    { rank:2, platform:'Instagram + Facebook', type:'Reel (Crossposted)', caption:'The one-week countdown from opening day of the Wrightsville Beach Farmers Market has begun', views:18221, interactions:1221, eng:6.70, url:'https://www.facebook.com/VisitWrightsvilleBeach/' },
+    { rank:3, platform:'Instagram', type:'Reel', caption:'Build confidence, learn to shred, and find your zen with RC Surf Instruction - The Kids Surf Camp', views:5003, interactions:193, eng:3.86, url:'https://www.instagram.com/wrightsvillenc/' }
+  ],
+  'Carolina Beach': [
+    { rank:1, platform:'Instagram', type:'Reel', caption:'Only 1 month away! Watch pups shred at Carolina Beach Pier on May 16 from 9:30am to 12:30pm', views:28392, interactions:2133, eng:7.51, url:'https://www.instagram.com/carolinabeachnc/' },
+    { rank:2, platform:'Instagram', type:'Reel', caption:'In case you missed the 2026 Wings Over Carolina Beach Air Show here is a recap - See you in 2027!', views:16828, interactions:771, eng:4.58, url:'https://www.instagram.com/carolinabeachnc/' },
+    { rank:3, platform:'Instagram', type:'Carousel', caption:'Did you know that Venus flytraps and pitcher plants will be blooming at Carolina Beach State Park?', views:22548, interactions:943, eng:4.18, url:'https://www.instagram.com/carolinabeachnc/' }
+  ],
+  'Kure Beach': [
+    { rank:1, platform:'Instagram', type:'Reel', caption:'Fresh seafood and no other plans sounds like a dream right now - #VisitKureBeachNC #KureBeachNC', views:13318, interactions:687, eng:5.16, url:'https://www.instagram.com/kurebeachnc/' },
+    { rank:2, platform:'Instagram + Facebook', type:'Reel (Crossposted)', caption:'No color grading or edits needed - #VisitKureBeachNC #KureBeachNC', views:10959, interactions:328, eng:2.99, url:'https://www.instagram.com/kurebeachnc/' },
+    { rank:3, platform:'Instagram + Facebook', type:'Carousel (Crossposted)', caption:'All paths lead here - #VisitKureBeachNC #KureBeachNC', views:25859, interactions:410, eng:1.59, url:'https://www.instagram.com/kurebeachnc/' }
+  ]
+};
+
+var milestones = {
+  'Wilmington': [
+    { month:'Apr 2026', views:701920, platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Apr 2026', views:218773, platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Apr 2026', views:217911, platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Mar 2026', views:375037, platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Mar 2026', views:176328, platform:'Facebook', account:'Visit Wilmington, NC and Beaches', url:'https://www.facebook.com/VisitWilmingtonNC/' },
+    { month:'Mar 2026', views:100702, platform:'Instagram', account:'wilmingtoncoast', url:'https://www.instagram.com/wilmingtoncoast/' }
+  ],
+  'Wrightsville Beach': [],
+  'Carolina Beach': [
+    { month:'Mar 2026', views:71555, platform:'Instagram', account:'carolinabeachnc', url:'https://www.instagram.com/carolinabeachnc/' },
+    { month:'Mar 2026', views:36601, platform:'Instagram', account:'carolinabeachnc', url:'https://www.instagram.com/carolinabeachnc/' },
+    { month:'Mar 2026', views:32924, platform:'Instagram', account:'carolinabeachnc', url:'https://www.instagram.com/carolinabeachnc/' }
+  ],
+  'Kure Beach': []
+};
+
+var acCampaigns = [
+  {name:'Area Guide - Partners',               sent:837,   opens:322,  clicks:11,  bounces:9,   unsubs:4,   date:'Apr 28, 2026', segment:'Industry Partners'},
+  {name:'Spring/Summer 2026 Newsletter',        sent:851,   opens:373,  clicks:84,  bounces:11,  unsubs:12,  date:'Apr 23, 2026', segment:'General'},
+  {name:'Mobile Trip Guide Launch - Partners',  sent:866,   opens:249,  clicks:96,  bounces:18,  unsubs:2,   date:'Apr 16, 2026', segment:'Industry Partners'},
+  {name:'KB Spring Newsletter - 03/26',         sent:20197, opens:3039, clicks:309, bounces:149, unsubs:34,  date:'Mar 26, 2026', segment:'Kure Beach'},
+  {name:'WB Spring Newsletter - 03/26',         sent:23805, opens:3655, clicks:402, bounces:110, unsubs:31,  date:'Mar 26, 2026', segment:'Wrightsville Beach'},
+  {name:'CB Spring Newsletter - 03/26',         sent:37650, opens:5777, clicks:642, bounces:316, unsubs:56,  date:'Mar 24, 2026', segment:'Carolina Beach'},
+  {name:'Wilm Spring Newsletter (03/26)',       sent:62480, opens:9989, clicks:913, bounces:396, unsubs:111, date:'Mar 24, 2026', segment:'Wilmington'},
+  {name:'Azalea Festival 2026',                 sent:75667, opens:12233,clicks:1417,bounces:393, unsubs:135, date:'Mar 10, 2026', segment:'All'},
+  {name:'Feast Festival',                       sent:63118, opens:10669,clicks:1089,bounces:377, unsubs:169, date:'Feb 24, 2026', segment:'Wilmington'},
+  {name:'KB Whats New Newsletter - 01/26',      sent:20318, opens:768,  clicks:124, bounces:95,  unsubs:6,   date:'Jan 27, 2026', segment:'Kure Beach'},
+  {name:'WB Whats New Newsletter - 01/26',      sent:24066, opens:1099, clicks:229, bounces:189, unsubs:15,  date:'Jan 27, 2026', segment:'Wrightsville Beach'},
+  {name:'CB Whats New Newsletter - 01/26',      sent:37852, opens:1648, clicks:257, bounces:251, unsubs:17,  date:'Jan 27, 2026', segment:'Carolina Beach'},
+  {name:'Wilm Whats New Newsletter - 01/26',    sent:63334, opens:2538, clicks:645, bounces:331, unsubs:27,  date:'Jan 27, 2026', segment:'Wilmington'},
+  {name:'Holiday Newsletter (Nov - KB)',         sent:20514, opens:937,  clicks:232, bounces:180, unsubs:12,  date:'Nov 6, 2025',  segment:'Kure Beach'},
+  {name:'Holiday Newsletter (Nov - WB)',         sent:24351, opens:1255, clicks:167, bounces:359, unsubs:11,  date:'Nov 6, 2025',  segment:'Wrightsville Beach'},
+  {name:'Holiday Newsletter (Nov - CB)',         sent:38302, opens:1856, clicks:238, bounces:493, unsubs:16,  date:'Nov 6, 2025',  segment:'Carolina Beach'},
+  {name:'Holiday Newsletter (Wilm-Nov)',         sent:64262, opens:3299, clicks:866, bounces:824, unsubs:39,  date:'Nov 6, 2025',  segment:'Wilmington'},
+  {name:'Fall/Winter 2026 Newsletter',           sent:864,   opens:164,  clicks:120, bounces:7,   unsubs:1,   date:'Oct 6, 2025',  segment:'General'},
+  {name:'September Newsletter (WB)',             sent:24709, opens:1875, clicks:345, bounces:697, unsubs:13,  date:'Sep 25, 2025', segment:'Wrightsville Beach'},
+  {name:'September Newsletter (KB)',             sent:20610, opens:1474, clicks:265, bounces:275, unsubs:9,   date:'Sep 25, 2025', segment:'Kure Beach'}
+];
+
+var acAutomations = [
+  {name:'Part 1 - Engagement Tagging',    active:false, entered:101414, current:2692, openRate:6,  clickRate:2,  totalSends:93861},
+  {name:'Wilmington Form Sign Up',         active:true,  entered:67970,  current:2,    openRate:9,  clickRate:2,  totalSends:67862},
+  {name:'Carolina Beach Form Sign Up',     active:true,  entered:40002,  current:2,    openRate:7,  clickRate:1,  totalSends:8256},
+  {name:'Niche Engagement Tagging',        active:false, entered:27430,  current:0,    openRate:8,  clickRate:2,  totalSends:26486},
+  {name:'Wrightsville Beach Form Sign Up', active:true,  entered:25200,  current:0,    openRate:9,  clickRate:1,  totalSends:1013},
+  {name:'Kure Beach Form Sign Up',         active:true,  entered:21501,  current:1,    openRate:6,  clickRate:2,  totalSends:21255},
+  {name:'Foodie Automation',               active:true,  entered:1056,   current:569,  openRate:52, clickRate:39, totalSends:3493},
+  {name:'Bulk Unsubscribe Unengaged',      active:true,  entered:871,    current:0,    openRate:0,  clickRate:0,  totalSends:0},
+  {name:'History Automation',             active:true,  entered:294,    current:294,  openRate:49, clickRate:56, totalSends:284},
+  {name:'Automation 8 (Film)',            active:false, entered:0,      current:0,    openRate:0,  clickRate:0,  totalSends:0}
+];
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function n(v){ return parseFloat(v)||0; }
+function fmt(v){
+  if(v===''||v===null||v===undefined) return '--';
+  v=parseFloat(v)||0;
+  if(v>=1000000) return (v/1000000).toFixed(1)+'M';
+  if(v>=1000) return (v/1000).toFixed(1)+'K';
+  return Math.round(v).toLocaleString();
+}
+function pct(v){ return (!v&&v!==0)||isNaN(v)||!isFinite(v)?'--':(+v).toFixed(2)+'%'; }
+function engCalc(views,ints){ var v=n(views),i=n(ints); return v>0?pct(i/v*100):'--'; }
+function delta(curr,prev){
+  var c=n(curr),p=n(prev);
+  if(!p&&!c) return {cls:'flat',txt:'--'};
+  if(!p) return {cls:'up',txt:'New'};
+  var d=(c-p)/p*100;
+  if(Math.abs(d)<0.05) return {cls:'flat',txt:'0.0%'};
+  return {cls:d>0?'up':'down', txt:(d>0?'+':'-')+Math.abs(d).toFixed(1)+'%'};
+}
+function milestoneInfo(views,loc){
+  var isBeach = loc && loc !== 'Wilmington';
+  if(views>=1000000) return {label:'Trophy 1M+',cls:'m1m'};
+  if(views>=750000)  return {label:'750K+',cls:'m750k'};
+  if(views>=500000)  return {label:'500K+',cls:'m500k'};
+  if(views>=100000)  return {label:'100K+',cls:'m100k'};
+  if(isBeach&&views>=50000) return {label:'50K+',cls:'m50k'};
+  if(isBeach&&views>=25000) return {label:'25K+',cls:'m25k'};
+  return null;
+}
+function setEl(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
+function setClass(id,cls){ var e=document.getElementById(id); if(e) e.className='computed '+cls; }
+function setDelta(id,d){ setEl(id,d.txt); setClass(id,d.cls); }
+function setBar(id,val,max,tip){
+  var e=document.getElementById(id);
+  if(e){ e.style.height=Math.max(Math.round(val/max*76),2)+'px'; e.setAttribute('data-tip',tip||fmt(val)); }
+}
+
+// ── RECOMPUTE ─────────────────────────────────────────────────────────────────
+function recompute(){
+  var loc=LOCS[currentLoc];
+  var d=store[loc];
+
+  // IG computed
+  setEl('ig-eng', engCalc(d.ig.views,d.ig.interactions)); setClass('ig-eng','computed eng divider');
+  setEl('ig-prev-eng', engCalc(d.ig.prev_views,d.ig.prev_interactions)); setClass('ig-prev-eng','computed divider');
+  setDelta('ig-vg', delta(d.ig.views,d.ig.prev_views));
+  setDelta('ig-ig', delta(d.ig.interactions,d.ig.prev_interactions));
+  setDelta('ig-fg', delta(d.ig.follows,d.ig.prev_follows));
+
+  // FB computed
+  setEl('fb-eng', engCalc(d.fb.viewers,d.fb.interactions)); setClass('fb-eng','computed eng divider');
+  setEl('fb-prev-eng', engCalc(d.fb.prev_viewers,d.fb.prev_interactions)); setClass('fb-prev-eng','computed divider');
+  setDelta('fb-vg', delta(d.fb.viewers,d.fb.prev_viewers));
+  setDelta('fb-ig', delta(d.fb.interactions,d.fb.prev_interactions));
+  setDelta('fb-fg', delta(d.fb.follows,d.fb.prev_follows));
+
+  // Summary cards
+  var pV=loc==='Wilmington'?partners.reduce(function(s,p){return s+(p.views||0);},0):0;
+  var pI=loc==='Wilmington'?partners.reduce(function(s,p){return s+(p.interactions||0);},0):0;
+  var tV=n(d.ig.views)+n(d.fb.viewers)+pV;
+  var tI=n(d.ig.interactions)+n(d.fb.interactions)+pI;
+  var tF=n(d.ig.follows)+n(d.fb.follows);
+  var tTF=n(d.ig.total_followers)+n(d.fb.total_followers);
+  var fd=delta(tF,n(d.ig.prev_follows)+n(d.fb.prev_follows));
+
+  setEl('sum-views', fmt(tV)||'--');
+  setEl('sum-int', fmt(tI)||'--');
+  setEl('sum-fol', fmt(tF)||'--');
+  setEl('sum-total-fol', tTF>0?fmt(tTF):'--');
+  setEl('sum-eng', tV>0?pct(tI/tV*100):'--');
+
+  // Charts
+  var igV=n(d.ig.views),fbV=n(d.fb.viewers),igPV=n(d.ig.prev_views),fbPV=n(d.fb.prev_viewers);
+  var igE=igV>0?n(d.ig.interactions)/igV*100:0;
+  var fbE=fbV>0?n(d.fb.interactions)/fbV*100:0;
+  var igPE=igPV>0?n(d.ig.prev_interactions)/igPV*100:0;
+  var fbPE=fbPV>0?n(d.fb.prev_interactions)/fbPV*100:0;
+  var maxV=Math.max(igV,fbV,igPV,fbPV,1);
+  var maxE=Math.max(igE,fbE,igPE,fbPE,1);
+  setBar('bIgPrev',igPV,maxV,fmt(igPV)); setBar('bIgCurr',igV,maxV,fmt(igV));
+  setBar('bFbPrev',fbPV,maxV,fmt(fbPV)); setBar('bFbCurr',fbV,maxV,fmt(fbV));
+  setBar('bIgEP',igPE,maxE,igPE.toFixed(1)+'%'); setBar('bIgEC',igE,maxE,igE.toFixed(1)+'%');
+  setBar('bFbEP',fbPE,maxE,fbPE.toFixed(1)+'%'); setBar('bFbEC',fbE,maxE,fbE.toFixed(1)+'%');
+}
+
+function recomputePartner(){
+  var totV=0,totI=0,totF=0;
+  partners.forEach(function(p,i){
+    setEl('pt-eng-'+i, engCalc(p.views,p.interactions)); setClass('pt-eng-'+i,'computed eng divider');
+    totV+=p.views||0; totI+=p.interactions||0;
+    totF+=parseFloat(p.total_followers)||0;
+  });
+  setEl('pt-tv',fmt(totV)); setEl('pt-ti',fmt(totI));
+  setEl('pt-tf', totF>0?fmt(totF):'--');
+  setEl('pt-te',engCalc(totV,totI)); setClass('pt-te','computed eng divider');
+  recompute();
+}
+
+// ── BUILD SOCIAL TAB ──────────────────────────────────────────────────────────
+function buildPage(){
+  var loc=LOCS[currentLoc];
+  var d=store[loc];
+  var s='';
+
+  // Import bar
+  s+='<div class="import-bar"><p><strong>How to use:</strong> Enter data below or share your Meta Business Suite screen with Claude.</p><div>';
+  s+='<span class="step-pill"><span class="step-num">1</span>Filter: Organic only</span>';
+  s+='<span class="step-pill"><span class="step-num">2</span>Exclude Stories</span>';
+  s+='<span class="step-pill"><span class="step-num">3</span>Share screen with Claude</span>';
+  s+='</div></div>';
+
+  // Summary cards
+  s+='<div class="summary-row">';
+  s+='<div class="scard"><div class="scard-label">Total Views / Viewers</div><div class="scard-val" id="sum-views">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Total Interactions</div><div class="scard-val" id="sum-int">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Follows from Posts</div><div class="scard-val" id="sum-fol">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Total Followers (IG+FB)</div><div class="scard-val" id="sum-total-fol">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Overall Engagement Rate</div><div class="scard-val" id="sum-eng">--</div></div>';
+  s+='</div>';
+
+  // IG section
+  s+=buildPlatSection('ig',d);
+  // FB section
+  s+=buildPlatSection('fb',d);
+  // Partner (Wilmington only)
+  if(loc==='Wilmington') s+=buildPartnerSection();
+  // Charts
+  s+=buildCharts();
+  // Top posts
+  s+=buildTopPosts(loc);
+  // Milestones
+  s+=buildMilestones(loc);
+  s+='<div style="height:60px"></div>';
+
+  // buildPage now used only internally; renderDestContent handles DOM injection
+  // Store built HTML for renderDestContent to use
+  window._builtPageHTML = s;
+  // Wire input events
+  ['ig','fb'].forEach(function(plt){
+    var isFB=plt==='fb';
+    var map=[
+      [plt+'-view-input',  isFB?'viewers':'views'],
+      [plt+'-int-input',   'interactions'],
+      [plt+'-fol-input',   'follows'],
+      [plt+'-tfol-input',  'total_followers'],
+      [plt+'-pview-input', isFB?'prev_viewers':'prev_views'],
+      [plt+'-pint-input',  'prev_interactions'],
+      [plt+'-pfol-input',  'prev_follows']
+    ];
+    map.forEach(function(pair){
+      var el=document.getElementById(pair[0]);
+      if(!el) return;
+      el.addEventListener('input',function(){ store[LOCS[currentLoc]][plt][pair[1]]=this.value; recompute(); });
+    });
+    var ne=document.getElementById(plt+'-notes');
+    if(ne) ne.addEventListener('input',function(){ store[LOCS[currentLoc]][plt].notes=this.value; });
+  });
+
+  recompute();
+  if(loc==='Wilmington') recomputePartner();
+}
+
+function buildPlatSection(plt,d){
+  var isIG=plt==='ig',isFB=plt==='fb';
+  var title=isIG?'Instagram':'Facebook';
+  var badgeCls=isIG?'badge-ig':'badge-fb';
+  var badgeTxt=isIG?'IG':'FB';
+  var icon=isIG
+    ?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>'
+    :'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M15 8h-2a2 2 0 0 0-2 2v2H9v3h2v5h3v-5h2l1-3h-3v-2a1 1 0 0 1 1-1h2V8z"/></svg>';
+  var g=d[plt];
+  var viewLabel=isFB?'Total Viewers':'Total Views';
+  var viewVal=isFB?(g.viewers||''):(g.views||'');
+  var prevViewVal=isFB?(g.prev_viewers||''):(g.prev_views||'');
+  var engNote=isFB?'(interactions / viewers)':'(interactions / views)';
+  var growthLabel=isFB?'Viewers vs Last Mo.':'Views vs Last Mo.';
+
+  var s='<div class="platform-section">';
+  s+='<div class="platform-header"><div class="platform-title">'+icon+' '+title+' <span class="badge '+badgeCls+'">'+badgeTxt+'</span></div>';
+  s+='<span class="badge-organic">Organic &middot; No stories</span></div>';
+  s+='<table class="data-table"><thead><tr>';
+  s+='<th style="width:120px"></th>';
+  s+='<th class="metric">'+viewLabel+'</th>';
+  s+='<th class="metric">Interactions</th>';
+  s+='<th class="metric">Follows from Posts</th>';
+  s+='<th class="metric">Total Followers</th>';
+  s+='<th class="metric divider">Engagement Rate<br><span style="font-weight:300;font-size:10px">'+engNote+'</span></th>';
+  s+='<th class="growth divider">'+growthLabel+'</th>';
+  s+='<th class="growth">Interactions vs Last Mo.</th>';
+  s+='<th class="growth">Follows vs Last Mo.</th>';
+  s+='</tr></thead><tbody><tr>';
+  s+='<td class="row-label">This month</td>';
+  s+='<td><input id="'+plt+'-view-input" type="number" placeholder="0" value="'+(viewVal||'')+'" style="text-align:right"></td>';
+  s+='<td><input id="'+plt+'-int-input" type="number" placeholder="0" value="'+(g.interactions||'')+'" style="text-align:right"></td>';
+  s+='<td><input id="'+plt+'-fol-input" type="number" placeholder="0" value="'+(g.follows||'')+'" style="text-align:right"></td>';
+  s+='<td><input id="'+plt+'-tfol-input" type="number" placeholder="Enter total" value="'+(g.total_followers||'')+'" style="text-align:right"></td>';
+  s+='<td class="computed eng divider" id="'+plt+'-eng">--</td>';
+  s+='<td class="computed flat divider" id="'+plt+'-vg">--</td>';
+  s+='<td class="computed flat" id="'+plt+'-ig">--</td>';
+  s+='<td class="computed flat" id="'+plt+'-fg">--</td>';
+  s+='</tr><tr>';
+  s+='<td class="row-label" style="color:var(--ink-light);font-size:12px">Last month</td>';
+  s+='<td><input id="'+plt+'-pview-input" type="number" placeholder="0" value="'+(prevViewVal||'')+'" style="text-align:right;color:var(--ink-light)"></td>';
+  s+='<td><input id="'+plt+'-pint-input" type="number" placeholder="0" value="'+(g.prev_interactions||'')+'" style="text-align:right;color:var(--ink-light)"></td>';
+  s+='<td><input id="'+plt+'-pfol-input" type="number" placeholder="0" value="'+(g.prev_follows||'')+'" style="text-align:right;color:var(--ink-light)"></td>';
+  s+='<td style="padding:12px 16px;color:var(--ink-light);font-size:12px">--</td>';
+  s+='<td class="computed divider" style="color:var(--ink-light);font-size:12px" id="'+plt+'-prev-eng">--</td>';
+  s+='<td class="divider"></td><td></td><td></td>';
+  s+='</tr></tbody></table>';
+  s+='<div class="notes-row"><span class="notes-label">Notes:</span>';
+  s+='<textarea id="'+plt+'-notes" placeholder="Add context, top posts, anomalies...">'+(g.notes||'')+'</textarea></div>';
+  s+='</div>';
+  return s;
+}
+
+function buildPartnerSection(){
+  var s='<div class="platform-section">';
+  s+='<div class="platform-header"><div class="platform-title">';
+  s+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  s+=' Partner Content <span class="badge badge-partner">Tagged / Collab</span>';
+  s+='</div><span class="badge-organic">Instagram only</span></div>';
+  s+='<table class="data-table"><thead><tr>';
+  s+='<th style="width:180px">Account</th>';
+  s+='<th class="metric">Total Views</th>';
+  s+='<th class="metric">Interactions</th>';
+  s+='<th class="metric">Total Followers</th>';
+  s+='<th class="metric divider">Engagement Rate</th>';
+  s+='</tr></thead><tbody>';
+  partners.forEach(function(p,i){
+    s+='<tr>';
+    s+='<td class="row-label" style="font-family:monospace;font-size:12px">@'+p.handle+'</td>';
+    s+='<td><input type="number" value="'+p.views+'" style="text-align:right" oninput="partners['+i+'].views=parseFloat(this.value)||0;recomputePartner()"></td>';
+    s+='<td><input type="number" value="'+p.interactions+'" style="text-align:right" oninput="partners['+i+'].interactions=parseFloat(this.value)||0;recomputePartner()"></td>';
+    s+='<td><input type="number" placeholder="Enter total" value="'+(p.total_followers||'')+'" style="text-align:right" oninput="partners['+i+'].total_followers=this.value"></td>';
+    s+='<td class="computed eng divider" id="pt-eng-'+i+'">--</td>';
+    s+='</tr>';
+  });
+  s+='<tr class="totals-row">';
+  s+='<td class="row-label">TOTAL</td>';
+  s+='<td class="computed" id="pt-tv">--</td>';
+  s+='<td class="computed" id="pt-ti">--</td>';
+  s+='<td class="computed" id="pt-tf" style="padding:12px 16px;text-align:right">--</td>';
+  s+='<td class="computed eng divider" id="pt-te">--</td>';
+  s+='</tr></tbody></table>';
+  s+='<div class="notes-row"><span class="notes-label">Notes:</span>';
+  s+='<textarea placeholder="Partner context..." oninput="partnerNotes=this.value">'+partnerNotes+'</textarea></div>';
+  s+='</div>';
+  return s;
+}
+
+function buildCharts(){
+  var s='<div class="chart-row">';
+  s+='<div class="chart-box"><h3>Views: This vs Last month <span>IG &amp; FB</span></h3>';
+  s+='<div class="mini-chart">';
+  s+='<div class="bar-group"><div class="bar ig-prev" id="bIgPrev" style="height:4px"></div><div class="bar ig-curr" id="bIgCurr" style="height:4px"></div></div>';
+  s+='<div class="bar-group"><div class="bar fb-prev" id="bFbPrev" style="height:4px"></div><div class="bar fb-curr" id="bFbCurr" style="height:4px"></div></div>';
+  s+='</div><div class="chart-labels"><div class="chart-label">IG</div><div class="chart-label">FB</div></div>';
+  s+='<div class="legend"><div class="legend-item"><div class="legend-dot" style="background:var(--coral)"></div>Last mo.</div><div class="legend-item"><div class="legend-dot" style="background:var(--coral);opacity:.5"></div>This mo. IG</div><div class="legend-item"><div class="legend-dot" style="background:var(--ocean-mid);opacity:.5"></div>This mo. FB</div></div>';
+  s+='</div>';
+  s+='<div class="chart-box"><h3>Eng Rate: This vs Last month <span>IG &amp; FB</span></h3>';
+  s+='<div class="mini-chart">';
+  s+='<div class="bar-group"><div class="bar ige-prev" id="bIgEP" style="height:4px"></div><div class="bar ige-curr" id="bIgEC" style="height:4px"></div></div>';
+  s+='<div class="bar-group"><div class="bar fbe-prev" id="bFbEP" style="height:4px"></div><div class="bar fbe-curr" id="bFbEC" style="height:4px"></div></div>';
+  s+='</div><div class="chart-labels"><div class="chart-label">IG eng%</div><div class="chart-label">FB eng%</div></div>';
+  s+='<div class="legend"><div class="legend-item"><div class="legend-dot" style="background:var(--seafoam)"></div>Last mo.</div><div class="legend-item"><div class="legend-dot" style="background:var(--seafoam);opacity:.5"></div>This mo. IG</div><div class="legend-item"><div class="legend-dot" style="background:var(--gold);opacity:.5"></div>This mo. FB</div></div>';
+  s+='</div></div>';
+  return s;
+}
+
+function buildTopPosts(loc){
+  var posts=topPosts[loc];
+  if(!posts||!posts.length) return '';
+  var s='<hr class="divider-line">';
+  s+='<div class="platform-section"><div class="platform-header"><div class="platform-title">';
+  s+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>';
+  s+=' Top 3 Posts by Engagement Rate <span class="badge-organic">Apr 2026</span></div></div>';
+  s+='<div class="posts-grid">';
+  posts.forEach(function(p){
+    var ll=p.platform.includes('Facebook')&&!p.platform.includes('Instagram')?'Facebook':'Instagram';
+    s+='<div class="post-card"><div class="post-rank-bar"><span>#'+p.rank+' Top Engagement</span><span class="eng-badge">'+p.eng.toFixed(2)+'%</span></div>';
+    s+='<div class="post-body"><div class="post-caption">'+p.caption+'</div>';
+    s+='<div class="post-meta"><span>'+p.platform+'</span><span>'+p.type+'</span></div>';
+    s+='<div class="post-stats"><div class="stat-box"><div class="stat-val">'+fmt(p.views)+'</div><div class="stat-lbl">Views</div></div>';
+    s+='<div class="stat-box"><div class="stat-val">'+p.interactions.toLocaleString()+'</div><div class="stat-lbl">Interactions</div></div></div></div>';
+    s+='<a class="post-link" href="'+p.url+'" target="_blank">View on '+ll+' &#8599;</a></div>';
+  });
+  s+='</div></div>';
+  return s;
+}
+
+function buildMilestones(loc){
+  var isBeach=loc!=='Wilmington';
+  var threshold=isBeach?25000:100000;
+  var threshLabel=isBeach?'25K+ Views':'100K+ Views';
+  var posts=milestones[loc]||[];
+  if(isBeach){
+    var extra=[];
+    (topPosts[loc]||[]).forEach(function(p){ if(p.views>=threshold) extra.push({month:'Apr 2026',views:p.views,platform:p.platform,account:p.type,url:p.url}); });
+    var all=extra.concat(posts);
+    var seen={};
+    posts=all.filter(function(m){ if(seen[m.views]) return false; seen[m.views]=true; return true; });
+    posts.sort(function(a,b){return b.views-a.views;});
+  }
+  if(!posts.length) return '';
+  var s='<div class="platform-section"><div class="platform-header"><div class="platform-title">';
+  s+='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  s+=' Milestone Posts - Running List <span class="badge badge-milestone">'+threshLabel+'</span>';
+  s+='</div></div>';
+  s+='<table class="data-table"><thead><tr>';
+  s+='<th style="width:90px">Month</th>';
+  s+='<th class="metric" style="width:100px">Milestone</th>';
+  s+='<th class="metric">Views</th>';
+  s+='<th style="width:180px">Platform &middot; Account</th>';
+  s+='<th style="width:60px">Link</th>';
+  s+='</tr></thead><tbody>';
+  posts.forEach(function(m){
+    var ml=milestoneInfo(m.views,loc);
+    if(!ml) return;
+    var vf=m.views>=1000000?(m.views/1000000).toFixed(2)+'M':(m.views/1000).toFixed(1)+'K';
+    s+='<tr>';
+    s+='<td class="row-label" style="font-size:12px;white-space:nowrap">'+(m.month||'--')+'</td>';
+    s+='<td style="padding:10px 16px"><span class="m-badge milestone-item '+ml.cls+'">'+ml.label+'</span></td>';
+    s+='<td class="computed" style="font-weight:700;color:var(--ink)">'+vf+'</td>';
+    s+='<td style="padding:10px 16px;font-size:12px;color:var(--ink-light)">'+m.platform+' &middot; '+m.account+'</td>';
+    s+='<td style="padding:10px 16px"><a class="m-link" href="'+m.url+'" target="_blank">View &#8599;</a></td>';
+    s+='</tr>';
+  });
+  s+='</tbody></table></div>';
+  return s;
+}
+
+// ── BUILD AC TAB ──────────────────────────────────────────────────────────────
+function buildACPage(){
+  function af(v){ v=parseFloat(v)||0; return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'K':Math.round(v).toLocaleString(); }
+  function ap(v){ return isNaN(parseFloat(v))?'--':(+v).toFixed(1)+'%'; }
+  function rc(v,lo,hi){ v=parseFloat(v); if(isNaN(v)) return ''; return 'color:'+(v>=hi?'#2d8a4e':v>=lo?'var(--gold)':'var(--coral)')+';font-weight:600'; }
+  function hbar(val,max,color){
+    var w=max>0?Math.min(Math.round(val/max*100),100):0;
+    return '<div style="background:var(--sand-dark);border-radius:20px;height:10px;overflow:hidden"><div style="background:'+color+';width:'+w+'%;height:100%;border-radius:20px;transition:width .6s ease"></div></div>';
+  }
+  function typeBadge(t){
+    return t==='Automation'
+      ? '<span style="font-size:10px;font-weight:700;background:var(--seafoam-light);color:var(--seafoam);padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px">Automation</span>'
+      : '<span style="font-size:10px;font-weight:700;background:var(--ocean-light);color:var(--ocean);padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px">Campaign</span>';
+  }
+
+  // ── SEGMENT DATA ────────────────────────────────────────────────────────────
+  var segs = [
+    {key:'wilmington',label:'Wilmington',color:'#1A4B6E',emoji:'&#128205;',listSize:67970,
+     campaigns:[{name:'Spring Newsletter',date:'Mar 2026',sent:62480,opens:9989,clicks:913,bounces:396,unsubs:111},{name:'Feast Festival',date:'Feb 2026',sent:63118,opens:10669,clicks:1089,bounces:377,unsubs:169},{name:'Whats New Newsletter',date:'Jan 2026',sent:63334,opens:2538,clicks:645,bounces:331,unsubs:27},{name:'Holiday Newsletter',date:'Nov 2025',sent:64262,opens:3299,clicks:866,bounces:824,unsubs:39},{name:'September Newsletter',date:'Sep 2025',sent:64690,opens:5899,clicks:1077,bounces:1060,unsubs:87}]},
+    {key:'wrightsville',label:'Wrightsville Beach',color:'#2C6E9B',emoji:'&#127754;',listSize:25200,
+     campaigns:[{name:'Spring Newsletter',date:'Mar 2026',sent:23805,opens:3656,clicks:402,bounces:109,unsubs:31},{name:'Whats New Newsletter',date:'Jan 2026',sent:24066,opens:1099,clicks:229,bounces:189,unsubs:15},{name:'Holiday Newsletter',date:'Nov 2025',sent:24351,opens:1255,clicks:167,bounces:359,unsubs:11},{name:'September Newsletter',date:'Sep 2025',sent:24709,opens:1875,clicks:345,bounces:697,unsubs:13}]},
+    {key:'carolina',label:'Carolina Beach',color:'#D96B4F',emoji:'&#127958;',listSize:40002,
+     campaigns:[{name:'Spring Newsletter',date:'Mar 2026',sent:37650,opens:5779,clicks:642,bounces:316,unsubs:56},{name:'Whats New Newsletter',date:'Jan 2026',sent:37852,opens:1648,clicks:257,bounces:251,unsubs:17},{name:'Holiday Newsletter',date:'Nov 2025',sent:38302,opens:1856,clicks:238,bounces:493,unsubs:16},{name:'September Newsletter',date:'Sep 2025',sent:39273,opens:2973,clicks:486,bounces:1415,unsubs:36}]},
+    {key:'kure',label:'Kure Beach',color:'#3D9E8C',emoji:'&#128012;',listSize:21501,
+     campaigns:[{name:'Spring Newsletter',date:'Mar 2026',sent:20197,opens:3041,clicks:310,bounces:149,unsubs:34},{name:'Whats New Newsletter',date:'Jan 2026',sent:20318,opens:768,clicks:124,bounces:95,unsubs:6},{name:'Holiday Newsletter',date:'Nov 2025',sent:20514,opens:937,clicks:232,bounces:180,unsubs:12},{name:'September Newsletter',date:'Sep 2025',sent:20610,opens:1474,clicks:265,bounces:275,unsubs:9}]},
+    {key:'all',label:'All Destinations',color:'#854F0B',emoji:'&#127758;',listSize:75667,
+     campaigns:[{name:'Azalea Festival 2026',date:'Mar 2026',sent:75667,opens:12233,clicks:1417,bounces:393,unsubs:135}]},
+    {key:'partners',label:'Industry Partners',color:'#7A9BAD',emoji:'&#128101;',listSize:866,
+     campaigns:[{name:'Area Guide',date:'Apr 2026',sent:837,opens:323,clicks:11,bounces:9,unsubs:4},{name:'Spring/Summer Newsletter',date:'Apr 2026',sent:851,opens:375,clicks:84,bounces:11,unsubs:12},{name:'Mobile Trip Guide',date:'Apr 2026',sent:866,opens:249,clicks:96,bounces:18,unsubs:2},{name:'Fall/Winter Newsletter',date:'Oct 2025',sent:864,opens:164,clicks:120,bounces:7,unsubs:1}]}
+  ];
+  segs.forEach(function(seg){
+    var ts=0,to=0,tc=0,tb=0,tu=0;
+    seg.campaigns.forEach(function(c){ts+=c.sent;to+=c.opens;tc+=c.clicks;tb+=c.bounces;tu+=c.unsubs;});
+    seg.totSent=ts;seg.totOpens=to;seg.totClicks=tc;seg.totBounces=tb;seg.totUnsubs=tu;
+    seg.avgOR=ts>0?Math.round(to/ts*1000)/10:0;
+    seg.avgCR=ts>0?Math.round(tc/ts*1000)/10:0;
+  });
+
+  // ── COMBINED TOTALS ─────────────────────────────────────────────────────────
+  var campSent=728616,campOpens=72099,campClicks=10015;
+  var autoSent=102163,autoOpens=10105,autoClicks=3137;
+  var totSent=830779,totOpens=82204,totClicks=13152;
+  var totOR=Math.round(totOpens/totSent*1000)/10;
+  var totCR=Math.round(totClicks/totSent*1000)/10;
+  var totO2C=Math.round(totClicks/totOpens*1000)/10;
+  var campOR=Math.round(campOpens/campSent*1000)/10;
+  var campCR=Math.round(campClicks/campSent*1000)/10;
+  var autoOR=Math.round(autoOpens/autoSent*1000)/10;
+  var autoCR=Math.round(autoClicks/autoSent*1000)/10;
+  var totalContacts=155673;
+  var maxOR=Math.max.apply(null,segs.map(function(sg){return sg.avgOR;}));
+  var maxCR=Math.max.apply(null,segs.map(function(sg){return sg.avgCR;}));
+
+  // ── AUTOMATION DATA ─────────────────────────────────────────────────────────
+  var welcomeAutos=[
+    {label:'Wilmington',color:'#1A4B6E',emoji:'&#128205;',entered:67971,current:1,sends:67863,opens:6245,clicks:1084,unsubs:0},
+    {label:'Wrightsville Beach',color:'#2C6E9B',emoji:'&#127754;',entered:25200,current:0,sends:1013,opens:90,clicks:12,unsubs:0},
+    {label:'Carolina Beach',color:'#D96B4F',emoji:'&#127958;',entered:40002,current:1,sends:8258,opens:606,clicks:107,unsubs:0},
+    {label:'Kure Beach',color:'#3D9E8C',emoji:'&#128012;',entered:21501,current:0,sends:21255,opens:1209,clicks:396,unsubs:0}
+  ];
+  var foodieEmails=[
+    {name:'Chef Dean Neff',sends:1045,opens:589,clicks:465},
+    {name:'Chef Sunny Gerhart',sends:913,opens:510,clicks:389},
+    {name:'Chef James Doss',sends:905,opens:407,clicks:345},
+    {name:'Chef Molly & Brendan',sends:627,opens:310,clicks:180},
+    {name:'William Mellon & Chef Carson Jewell',sends:8,opens:4,clicks:0}
+  ];
+  var historyEmails=[
+    {name:'Cedric Harrison / America 250',sends:284,opens:139,clicks:159},
+    {name:'Revolutionary - America 250',sends:0,opens:0,clicks:0}
+  ];
+  var foodieTotSends=3498,foodieTotOpens=1820,foodieTotClicks=1379;
+  var foodieOR=Math.round(foodieTotOpens/foodieTotSends*1000)/10;
+  var foodieCR=Math.round(foodieTotClicks/foodieTotSends*1000)/10;
+  var foodieO2C=Math.round(foodieTotClicks/foodieTotOpens*1000)/10;
+  var histTotSends=284,histTotOpens=139,histTotClicks=159;
+  var histOR=Math.round(histTotOpens/histTotSends*1000)/10;
+  var histCR=Math.round(histTotClicks/histTotSends*1000)/10;
+  var histO2C=Math.round(histTotClicks/histTotOpens*1000)/10;
+
+  // ── TOP EMAILS BY CLICK RATE (campaigns + automations) ──────────────────────
+  var allEmails=[
+    {name:'Cedric Harrison / America 250',seg:'History Auto',type:'Automation',sent:284,opens:139,clicks:159,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/94'},
+    {name:'Chef Dean Neff',seg:'Foodie Auto',type:'Automation',sent:1045,opens:589,clicks:465,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/42'},
+    {name:'Chef Sunny Gerhart',seg:'Foodie Auto',type:'Automation',sent:913,opens:510,clicks:389,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/44'},
+    {name:'Chef James Doss',seg:'Foodie Auto',type:'Automation',sent:905,opens:407,clicks:345,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/48'},
+    {name:'Chef Molly & Brendan',seg:'Foodie Auto',type:'Automation',sent:627,opens:310,clicks:180,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/64'},
+    {name:'Fall/Winter 2026 Newsletter',seg:'Partners',type:'Campaign',sent:864,opens:164,clicks:120,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/38'},
+    {name:'Mobile Trip Guide - Partners',seg:'Partners',type:'Campaign',sent:866,opens:249,clicks:96,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/93'},
+    {name:'Spring/Summer 2026 Newsletter',seg:'Partners',type:'Campaign',sent:851,opens:375,clicks:84,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/92'},
+    {name:'Azalea Festival 2026',seg:'All Destinations',type:'Campaign',sent:75667,opens:12233,clicks:1417,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/84'},
+    {name:'Kure Beach Welcome Letter',seg:'Welcome Auto',type:'Automation',sent:21255,opens:1209,clicks:396,url:'https://wilmingtonandbeaches.activehosted.com/app/campaigns/24'}
+  ];
+  allEmails.forEach(function(e){
+    e.cr=e.sent>0?Math.round(e.clicks/e.sent*1000)/10:0;
+    e.or=e.sent>0?Math.round(e.opens/e.sent*1000)/10:0;
+    e.o2c=e.opens>0?Math.round(e.clicks/e.opens*1000)/10:0;
+  });
+
+  var s='';
+
+  // ── BANNER ──────────────────────────────────────────────────────────────────
+  s+='<div style="background:var(--seafoam-light);border-radius:var(--radius);padding:10px 16px;margin-bottom:20px;font-size:12px;color:#2A6E5E;display:flex;align-items:center;gap:8px">';
+  s+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+  s+='Connected via ActiveCampaign MCP &mdash; refreshed May 7, 2026 &middot; <strong style="margin-left:4px">22 campaigns &middot; 10 automations</strong></div>';
+  // Sub-tab navigation
+  s+='<div style="display:flex;gap:0;border-bottom:2px solid var(--sand-dark);margin-bottom:24px">';
+  s+='<button onclick="showACView(\'overview\')" id="ac-tab-overview" style="padding:10px 20px;font-size:13px;font-weight:600;font-family:var(--font-sans,sans-serif);border:none;background:none;cursor:pointer;color:var(--white);background:var(--ocean);border-radius:6px 6px 0 0;margin-right:4px">Overview</button>';
+  s+='<button onclick="showACView(\'trends\')" id="ac-tab-trends" style="padding:10px 20px;font-size:13px;font-weight:500;font-family:var(--font-sans,sans-serif);border:none;background:none;cursor:pointer;color:var(--ink-mid);border-radius:6px 6px 0 0;margin-right:4px">&#128200; Trends</button>';
+  s+='</div>';
+  s+='<div id="ac-overview-content">';
+
+  // ── SECTION 1: COMBINED OVERVIEW ─────────────────────────────────────────────
+  s+='<div style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--ink);margin-bottom:12px">Combined Email Overview</div>';
+  // Big 5 summary cards
+  s+='<div class="summary-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:16px">';
+  s+='<div class="scard"><div class="scard-label">Total Email List</div><div class="scard-val">'+af(totalContacts)+'</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">across all destinations</div></div>';
+  s+='<div class="scard"><div class="scard-label">Total Sends</div><div class="scard-val">'+af(totSent)+'</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">campaigns + automations</div></div>';
+  s+='<div class="scard"><div class="scard-label">Unique Opens</div><div class="scard-val">'+af(totOpens)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Open Rate</div><div class="scard-val" style="'+rc(totOR,10,16)+'">'+ap(totOR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Click Rate</div><div class="scard-val" style="'+rc(totCR,1,3)+'">'+ap(totCR)+'</div></div>';
+  s+='</div>';
+  // Campaign vs Automation split
+  s+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px">';
+  // Campaign card
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 20px;border-left:4px solid var(--ocean-mid)">';
+  s+='<div style="font-size:12px;font-weight:600;color:var(--ocean);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">One-Time Campaigns</div>';
+  s+='<div style="display:flex;gap:16px;flex-wrap:wrap">';
+  s+='<div><div style="font-size:22px;font-weight:600;color:var(--ink)">'+af(campSent)+'</div><div style="font-size:11px;color:var(--ink-light)">Total sends</div></div>';
+  s+='<div><div style="font-size:22px;font-weight:600;'+rc(campOR,10,16)+'">'+ap(campOR)+'</div><div style="font-size:11px;color:var(--ink-light)">Avg open rate</div></div>';
+  s+='<div><div style="font-size:22px;font-weight:600;'+rc(campCR,1,3)+'">'+ap(campCR)+'</div><div style="font-size:11px;color:var(--ink-light)">Avg click rate</div></div>';
+  s+='<div><div style="font-size:22px;font-weight:600;color:var(--ink)">22</div><div style="font-size:11px;color:var(--ink-light)">Campaigns sent</div></div>';
+  s+='</div></div>';
+  // Automation card
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 20px;border-left:4px solid var(--seafoam)">';
+  s+='<div style="font-size:12px;font-weight:600;color:var(--seafoam);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Interest Automations</div>';
+  s+='<div style="display:flex;gap:16px;flex-wrap:wrap">';
+  s+='<div><div style="font-size:22px;font-weight:600;color:var(--ink)">'+af(autoSent)+'</div><div style="font-size:11px;color:var(--ink-light)">Total sends</div></div>';
+  s+='<div><div style="font-size:22px;font-weight:600;'+rc(autoOR,10,16)+'">'+ap(autoOR)+'</div><div style="font-size:11px;color:var(--ink-light)">Avg open rate</div></div>';
+  s+='<div><div style="font-size:22px;font-weight:600;'+rc(autoCR,1,3)+'">'+ap(autoCR)+'</div><div style="font-size:11px;color:var(--ink-light)">Avg click rate</div></div>';
+  s+='<div><div style="font-size:22px;font-weight:600;color:var(--ink)">155K</div><div style="font-size:11px;color:var(--ink-light)">Audience entered</div></div>';
+  s+='</div></div>';
+  s+='</div>';
+
+  // ── SECTION 2: COMBINED OR + CR CHART ────────────────────────────────────────
+  s+='<div class="ac-section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Open Rate &amp; Click Rate by Destination</div>';
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:28px">';
+  s+='<div style="display:grid;grid-template-columns:140px 1fr 56px 1fr 56px;gap:8px;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--sand-dark)">';
+  s+='<div style="font-size:11px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px">Destination</div>';
+  s+='<div style="font-size:11px;font-weight:600;color:var(--ocean);text-transform:uppercase;letter-spacing:.5px;text-align:center">Open Rate</div>';
+  s+='<div></div>';
+  s+='<div style="font-size:11px;font-weight:600;color:var(--seafoam);text-transform:uppercase;letter-spacing:.5px;text-align:center">Click Rate</div>';
+  s+='<div></div></div>';
+  segs.forEach(function(seg){
+    var orW=maxOR>0?Math.round(seg.avgOR/maxOR*100):0;
+    var crW=maxCR>0?Math.round(seg.avgCR/maxCR*100):0;
+    s+='<div style="display:grid;grid-template-columns:140px 1fr 56px 1fr 56px;gap:8px;align-items:center;margin-bottom:10px">';
+    s+='<div style="font-size:13px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+seg.emoji+' '+seg.label+'</div>';
+    s+='<div style="background:var(--sand-dark);border-radius:20px;height:10px;overflow:hidden"><div style="background:'+seg.color+';width:'+orW+'%;height:100%;border-radius:20px;transition:width .6s"></div></div>';
+    s+='<div style="font-size:13px;font-weight:700;text-align:right;'+rc(seg.avgOR,10,16)+'">'+ap(seg.avgOR)+'</div>';
+    s+='<div style="background:var(--sand-dark);border-radius:20px;height:10px;overflow:hidden"><div style="background:var(--seafoam);opacity:.7;width:'+crW+'%;height:100%;border-radius:20px;transition:width .6s"></div></div>';
+    s+='<div style="font-size:13px;font-weight:700;text-align:right;'+rc(seg.avgCR,1,3)+'">'+ap(seg.avgCR)+'</div>';
+    s+='</div>';
+  });
+  s+='<div style="font-size:11px;color:var(--ink-light);margin-top:12px;padding-top:10px;border-top:1px solid var(--sand-dark);display:flex;gap:16px;flex-wrap:wrap">';
+  s+='<span><span style="color:#2d8a4e;font-weight:600">&#9632;</span> OR 16%+ / CR 3%+</span>';
+  s+='<span><span style="color:var(--gold);font-weight:600">&#9632;</span> OR 10-16% / CR 1-3%</span>';
+  s+='<span><span style="color:var(--coral);font-weight:600">&#9632;</span> Below benchmark</span>';
+  s+='<span style="margin-left:auto">Industry avg: OR ~20%, CR ~2% (travel/tourism)</span>';
+  s+='</div></div>';
+
+  // ── SECTION 3: AUTOMATION OVERVIEW ──────────────────────────────────────────
+  s+='<div class="ac-section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> Automation Performance Overview</div>';
+  var allAutoSends=67863+1013+8258+21255+3498+284;
+  var allAutoOpens=6245+90+606+1209+1820+139;
+  var allAutoClicks=1084+12+107+396+1379+159;
+  var allAutoOR=Math.round(allAutoOpens/allAutoSends*1000)/10;
+  var allAutoCR=Math.round(allAutoClicks/allAutoSends*1000)/10;
+  var allAutoO2C=Math.round(allAutoClicks/allAutoOpens*1000)/10;
+  var totalEntered=67971+25200+40002+21501+1056+294;
+  s+='<div class="summary-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">';
+  s+='<div class="scard"><div class="scard-label">Total Automation Audience</div><div class="scard-val">'+af(totalEntered)+'</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">contacts entered</div></div>';
+  s+='<div class="scard"><div class="scard-label">Automation Sends</div><div class="scard-val">'+af(allAutoSends)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Open Rate</div><div class="scard-val" style="'+rc(allAutoOR,10,20)+'">'+ap(allAutoOR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Click Rate</div><div class="scard-val" style="'+rc(allAutoCR,1,3)+'">'+ap(allAutoCR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Open-to-Click Rate</div><div class="scard-val" style="'+rc(allAutoO2C,10,25)+'">'+ap(allAutoO2C)+'</div></div>';
+  s+='</div>';
+
+  // ── SECTION 4: WELCOME SIGN-UPS ──────────────────────────────────────────────
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1.5px solid var(--sand-dark)">';
+  s+='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.33a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  s+='<span style="font-size:18px;font-weight:600;color:var(--ink)">Welcome Sign-Up Automations</span>';
+  s+='<span class="badge-organic" style="font-size:11px;margin-left:4px">4 active</span>';
+  s+='<span style="font-size:12px;color:var(--ink-light);margin-left:auto">Trigger: form sign-up &mdash; Sources: website, social, ManyChat</span>';
+  s+='</div>';
+  var maxWEntered=Math.max.apply(null,welcomeAutos.map(function(a){return a.entered;}));
+  s+='<div style="font-size:12px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Audience Growth</div>';
+  welcomeAutos.forEach(function(a){
+    s+='<div style="display:grid;grid-template-columns:160px 1fr 80px;gap:8px;align-items:center;margin-bottom:8px">';
+    s+='<span style="font-size:13px;font-weight:500;color:var(--ink)">'+a.emoji+' '+a.label+'</span>';
+    s+=hbar(a.entered,maxWEntered,a.color);
+    s+='<span style="font-size:13px;font-weight:700;text-align:right;color:var(--ink)">'+af(a.entered)+'</span>';
+    s+='</div>';
+  });
+  s+='<div style="background:var(--sand);border-radius:8px;padding:10px 14px;margin:14px 0;font-size:12px;color:var(--ink-mid)">';
+  s+='<strong style="color:var(--ink)">Where contacts come from:</strong> Website sign-up forms (primary), ManyChat bot flows (secondary), organic social media link-in-bio. ';
+  s+='Source attribution is not currently tracked per contact — consider adding a hidden UTM field to sign-up forms for future tracking.';
+  s+='</div>';
+  s+='<div style="font-size:12px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Email Performance</div>';
+  s+='<table class="ac-campaign-table"><thead><tr>';
+  s+='<th>Destination</th><th class="metric">Audience</th><th class="metric">Sends</th><th class="metric">Opens</th><th class="metric">Open Rate</th><th class="metric">Clicks</th><th class="metric">Click Rate</th><th class="metric">Open-to-Click</th>';
+  s+='</tr></thead><tbody>';
+  var wTotSends=0,wTotOpens=0,wTotClicks=0;
+  welcomeAutos.forEach(function(a){
+    var or=a.sends>0?Math.round(a.opens/a.sends*1000)/10:0;
+    var cr=a.sends>0?Math.round(a.clicks/a.sends*1000)/10:0;
+    var o2c=a.opens>0?Math.round(a.clicks/a.opens*1000)/10:0;
+    wTotSends+=a.sends;wTotOpens+=a.opens;wTotClicks+=a.clicks;
+    s+='<tr>';
+    s+='<td style="padding:10px 14px;font-weight:500">'+a.emoji+' '+a.label+'</td>';
+    s+='<td class="metric">'+af(a.entered)+'</td><td class="metric">'+af(a.sends)+'</td><td class="metric">'+af(a.opens)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(or,8,16)+'">'+ap(or)+'</td>';
+    s+='<td class="metric">'+af(a.clicks)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(cr,1,3)+'">'+ap(cr)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(o2c,10,25)+'">'+ap(o2c)+'</td>';
+    s+='</tr>';
+  });
+  var wOR=wTotSends>0?Math.round(wTotOpens/wTotSends*1000)/10:0;
+  var wCR=wTotSends>0?Math.round(wTotClicks/wTotSends*1000)/10:0;
+  var wO2C=wTotOpens>0?Math.round(wTotClicks/wTotOpens*1000)/10:0;
+  s+='<tr style="background:var(--sand);font-weight:700"><td style="padding:10px 14px">TOTAL</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(154674)+'</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(wTotSends)+'</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(wTotOpens)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;'+rc(wOR,8,16)+'">'+ap(wOR)+'</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(wTotClicks)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;'+rc(wCR,1,3)+'">'+ap(wCR)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;'+rc(wO2C,10,25)+'">'+ap(wO2C)+'</td>';
+  s+='</tr></tbody></table></div>';
+
+  // ── SECTION 5: FOODIE AUTOMATION ─────────────────────────────────────────────
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1.5px solid var(--sand-dark)">';
+  s+='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>';
+  s+='<span style="font-size:18px;font-weight:600;color:var(--ink)">Foodie Automation</span>';
+  s+='<span class="badge-organic" style="font-size:11px;margin-left:4px">Active</span>';
+  s+='<span style="font-size:12px;color:var(--ink-light);margin-left:auto">Trigger: foodie tag &middot; 1,056 entered &middot; 569 currently active</span>';
+  s+='</div>';
+  // Audience growth bar (single)
+  s+='<div style="font-size:12px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Audience Growth</div>';
+  s+='<div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:6px">';
+  s+='<div style="background:var(--sand-dark);border-radius:20px;height:12px;overflow:hidden"><div style="background:var(--gold);width:100%;height:100%;border-radius:20px"></div></div>';
+  s+='<span style="font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap">1,056 entered</span>';
+  s+='</div>';
+  s+='<div style="display:flex;gap:20px;font-size:12px;color:var(--ink-light);margin-bottom:14px">';
+  s+='<span>&#128100; 569 currently active in sequence</span>';
+  s+='<span>&#9989; 471 completed</span>';
+  s+='<span>&#128279; Tagged via sign-up interest or link-click behavior</span>';
+  s+='</div>';
+  s+='<div style="background:var(--sand);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--ink-mid)">';
+  s+='<strong style="color:var(--ink)">Audience sources:</strong> Contacts who selected the Foodie interest on sign-up forms, or tagged via the Niche Engagement Tagging automation after clicking food-related links. Driven by website forms and ManyChat interest flows.';
+  s+='</div>';
+  s+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">';
+  s+='<div class="scard"><div class="scard-label">Audience Entered</div><div class="scard-val">1,056</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Open Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">'+ap(foodieOR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Click Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">'+ap(foodieCR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Open-to-Click Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">'+ap(foodieO2C)+'</div></div>';
+  s+='</div>';
+  s+='<table class="ac-campaign-table"><thead><tr>';
+  s+='<th>Email</th><th class="metric">Sends</th><th class="metric">Opens</th><th class="metric">Open Rate</th><th class="metric">Clicks</th><th class="metric">Click Rate</th><th class="metric">Open-to-Click</th><th style="width:60px">Preview</th>';
+  s+='</tr></thead><tbody>';
+  var foodieUrls=['https://wilmingtonandbeaches.activehosted.com/app/campaigns/42','https://wilmingtonandbeaches.activehosted.com/app/campaigns/44','https://wilmingtonandbeaches.activehosted.com/app/campaigns/48','https://wilmingtonandbeaches.activehosted.com/app/campaigns/64',''];
+  foodieEmails.forEach(function(e,i){
+    if(!e.sends) return;
+    var or=Math.round(e.opens/e.sends*1000)/10;
+    var cr=Math.round(e.clicks/e.sends*1000)/10;
+    var o2c=e.opens>0?Math.round(e.clicks/e.opens*1000)/10:0;
+    s+='<tr><td class="name">'+e.name+'</td>';
+    s+='<td class="metric">'+af(e.sends)+'</td><td class="metric">'+af(e.opens)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(or,20,40)+'">'+ap(or)+'</td>';
+    s+='<td class="metric">'+af(e.clicks)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(cr,10,30)+'">'+ap(cr)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(o2c,20,50)+'">'+ap(o2c)+'</td>';
+    s+='<td style="padding:10px 14px">'+(foodieUrls[i]?'<a href="'+foodieUrls[i]+'" target="_blank" style="font-size:12px;color:var(--ocean-mid);font-weight:500">View &#8599;</a>':'--')+'</td>';
+    s+='</tr>';
+  });
+  s+='<tr style="background:var(--sand);font-weight:700"><td style="padding:10px 14px">TOTAL</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(foodieTotSends)+'</td><td class="metric" style="padding:10px 14px">'+af(foodieTotOpens)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;color:#2d8a4e;font-weight:700">'+ap(foodieOR)+'</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(foodieTotClicks)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;color:#2d8a4e;font-weight:700">'+ap(foodieCR)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;color:#2d8a4e;font-weight:700">'+ap(foodieO2C)+'</td>';
+  s+='<td style="padding:10px 14px"></td></tr></tbody></table></div>';
+
+  // ── SECTION 6: HISTORY AUTOMATION ────────────────────────────────────────────
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1.5px solid var(--sand-dark)">';
+  s+='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+  s+='<span style="font-size:18px;font-weight:600;color:var(--ink)">History Automation</span>';
+  s+='<span class="badge-organic" style="font-size:11px;margin-left:4px">Active</span>';
+  s+='<span style="font-size:12px;color:var(--ink-light);margin-left:auto">Trigger: history tag &middot; 294 entered &middot; all still active &middot; Launched Apr 2026</span>';
+  s+='</div>';
+  // Audience growth bar
+  s+='<div style="font-size:12px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Audience Growth</div>';
+  s+='<div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-bottom:6px">';
+  var histPct=Math.round(294/1056*100);
+  s+='<div style="background:var(--sand-dark);border-radius:20px;height:12px;overflow:hidden"><div style="background:var(--ocean-mid);width:'+histPct+'%;height:100%;border-radius:20px"></div></div>';
+  s+='<span style="font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap">294 entered</span>';
+  s+='</div>';
+  s+='<div style="display:flex;gap:20px;font-size:12px;color:var(--ink-light);margin-bottom:14px">';
+  s+='<span>&#128100; 294 currently active (0 exited)</span>';
+  s+='<span>&#128197; Launched April 2026 &mdash; growing</span>';
+  s+='<span>&#128279; Tagged via sign-up interest or link-click behavior</span>';
+  s+='</div>';
+  s+='<div style="background:var(--sand);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--ink-mid)">';
+  s+='<strong style="color:var(--ink)">Audience sources:</strong> Contacts tagged with a history interest via sign-up form selection or link-click tagging. Launched April 2026 for America 250 programming. Exceptionally high open-to-click rate ('+ap(histO2C)+') signals very strong content-audience match.';
+  s+='</div>';
+  s+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">';
+  s+='<div class="scard"><div class="scard-label">Audience Entered</div><div class="scard-val">294</div><div style="font-size:11px;color:var(--ink-light);margin-top:3px">actively growing</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Open Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">'+ap(histOR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Avg Click Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">'+ap(histCR)+'</div></div>';
+  s+='<div class="scard"><div class="scard-label">Open-to-Click Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">'+ap(histO2C)+'</div></div>';
+  s+='</div>';
+  s+='<table class="ac-campaign-table"><thead><tr>';
+  s+='<th>Email</th><th class="metric">Sends</th><th class="metric">Opens</th><th class="metric">Open Rate</th><th class="metric">Clicks</th><th class="metric">Click Rate</th><th class="metric">Open-to-Click</th><th style="width:60px">Preview</th>';
+  s+='</tr></thead><tbody>';
+  var histUrls=['https://wilmingtonandbeaches.activehosted.com/app/campaigns/94','https://wilmingtonandbeaches.activehosted.com/app/campaigns/101'];
+  historyEmails.forEach(function(e,i){
+    var or=e.sends>0?Math.round(e.opens/e.sends*1000)/10:0;
+    var cr=e.sends>0?Math.round(e.clicks/e.sends*1000)/10:0;
+    var o2c=e.opens>0?Math.round(e.clicks/e.opens*1000)/10:0;
+    s+='<tr><td class="name">'+e.name+'</td>';
+    s+='<td class="metric">'+af(e.sends)+'</td><td class="metric">'+af(e.opens)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(or,20,40)+'">'+ap(or)+'</td>';
+    s+='<td class="metric">'+af(e.clicks)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(cr,10,30)+'">'+ap(cr)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(o2c,20,50)+'">'+ap(o2c)+'</td>';
+    s+='<td style="padding:10px 14px"><a href="'+histUrls[i]+'" target="_blank" style="font-size:12px;color:var(--ocean-mid);font-weight:500">View &#8599;</a></td>';
+    s+='</tr>';
+  });
+  s+='<tr style="background:var(--sand);font-weight:700"><td style="padding:10px 14px">1 sent &mdash; 2nd email pending</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(histTotSends)+'</td><td class="metric" style="padding:10px 14px">'+af(histTotOpens)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;color:#2d8a4e;font-weight:700">'+ap(histOR)+'</td>';
+  s+='<td class="metric" style="padding:10px 14px">'+af(histTotClicks)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;color:#2d8a4e;font-weight:700">'+ap(histCR)+'</td>';
+  s+='<td style="padding:10px 14px;text-align:right;color:#2d8a4e;font-weight:700">'+ap(histO2C)+'</td>';
+  s+='<td style="padding:10px 14px"></td></tr></tbody></table></div>';
+
+  // ── SECTION 7: BEST PERFORMING EMAILS BY CLICK RATE ─────────────────────────
+  s+='<div class="ac-section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Best Performing Emails by Click Rate</div>';
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:4px 0;margin-bottom:20px">';
+  s+='<table class="ac-campaign-table" style="margin-bottom:0">';
+  s+='<thead><tr>';
+  s+='<th style="width:32px">#</th>';
+  s+='<th>Email Name</th>';
+  s+='<th>Type</th>';
+  s+='<th>Segment</th>';
+  s+='<th class="metric">Sent</th>';
+  s+='<th class="metric">Open Rate</th>';
+  s+='<th class="metric">Click Rate</th>';
+  s+='<th class="metric">Open-to-Click</th>';
+  s+='<th style="width:60px">Preview</th>';
+  s+='</tr></thead><tbody>';
+  allEmails.forEach(function(e,i){
+    s+='<tr>';
+    s+='<td style="padding:10px 14px;font-weight:700;color:var(--ink-light)">'+(i+1)+'</td>';
+    s+='<td class="name">'+e.name+'</td>';
+    s+='<td style="padding:10px 14px">'+typeBadge(e.type)+'</td>';
+    s+='<td style="padding:10px 14px;font-size:12px;color:var(--ink-light)">'+e.seg+'</td>';
+    s+='<td class="metric">'+af(e.sent)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(e.or,10,20)+'">'+ap(e.or)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(e.cr,1,10)+'">'+ap(e.cr)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(e.o2c,10,50)+'">'+ap(e.o2c)+'</td>';
+    s+='<td style="padding:10px 14px"><a href="'+e.url+'" target="_blank" style="font-size:12px;color:var(--ocean-mid);font-weight:500">View &#8599;</a></td>';
+    s+='</tr>';
+  });
+  s+='</tbody></table>';
+  s+='<div style="font-size:11px;color:var(--ink-light);padding:12px 16px;border-top:1px solid var(--sand-dark);display:flex;gap:20px;flex-wrap:wrap">';
+  s+='<span><span style="color:#2d8a4e;font-weight:600">&#9632;</span> Above benchmark &nbsp;</span>';
+  s+='<span><span style="color:var(--gold);font-weight:600">&#9632;</span> Approaching &nbsp;</span>';
+  s+='<span><span style="color:var(--coral);font-weight:600">&#9632;</span> Below benchmark</span>';
+  s+='<span style="margin-left:auto;font-style:italic">Preview links open in ActiveCampaign &mdash; requires AC login</span>';
+  s+='</div></div>';
+
+  s+='</div>';
+  s+='<div id="ac-trends-content" style="display:none"></div>';
+  s+='<div style="height:60px"></div>';
+  return s;
+}
+
+function buildACTrends(){
+  function af(v){ v=parseFloat(v)||0; return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'K':Math.round(v).toLocaleString(); }
+  function ap(v,d){ return isNaN(parseFloat(v))?'--':(+v).toFixed(d||1)+'%'; }
+  function rc(v,lo,hi){ v=parseFloat(v); if(isNaN(v)) return ''; return 'color:'+(v>=hi?'#2d8a4e':v>=lo?'var(--gold)':'var(--coral)')+';font-weight:600'; }
+
+  // ── DATA ──
+  var months = ['Sep 2025','Nov 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026'];
+
+  var automationGrowth = [
+    {month:'Oct 2025', foodie:180, history:0},
+    {month:'Nov 2025', foodie:210, history:0},
+    {month:'Dec 2025', foodie:140, history:0},
+    {month:'Jan 2026', foodie:165, history:0},
+    {month:'Feb 2026', foodie:148, history:0},
+    {month:'Mar 2026', foodie:132, history:0},
+    {month:'Apr 2026', foodie:81,  history:294}
+  ];
+
+  // Cumulative
+  var foodieCum=0, histCum=0;
+  automationGrowth.forEach(function(m){ foodieCum+=m.foodie; histCum+=m.history; m.foodieCum=foodieCum; m.histCum=histCum; });
+
+  var destTrends = {
+    'Wilmington':        {color:'#1A4B6E', emoji:'&#128205;', data:[{m:'Sep 2025',or:9.1,cr:1.7},{m:'Nov 2025',or:5.1,cr:1.3},{m:'Jan 2026',or:4.0,cr:1.0},{m:'Mar 2026',or:16.0,cr:1.5}]},
+    'Wrightsville Beach':{color:'#2C6E9B', emoji:'&#127754;', data:[{m:'Sep 2025',or:7.6,cr:1.4},{m:'Nov 2025',or:5.2,cr:0.7},{m:'Jan 2026',or:4.6,cr:1.0},{m:'Mar 2026',or:15.4,cr:1.7}]},
+    'Carolina Beach':    {color:'#D96B4F', emoji:'&#127958;', data:[{m:'Sep 2025',or:7.6,cr:1.2},{m:'Nov 2025',or:4.8,cr:0.6},{m:'Jan 2026',or:4.4,cr:0.7},{m:'Mar 2026',or:15.3,cr:1.7}]},
+    'Kure Beach':        {color:'#3D9E8C', emoji:'&#128012;', data:[{m:'Sep 2025',or:7.2,cr:1.3},{m:'Nov 2025',or:4.6,cr:1.1},{m:'Jan 2026',or:3.8,cr:0.6},{m:'Mar 2026',or:15.1,cr:1.5}]}
+  };
+  var sendMonths = ['Sep 2025','Nov 2025','Jan 2026','Mar 2026'];
+
+  var unsubData = [
+    {month:'Sep 2025', sent:149282, unsubs:145, rate:0.097},
+    {month:'Nov 2025', sent:147429, unsubs:78,  rate:0.053},
+    {month:'Jan 2026', sent:145570, unsubs:65,  rate:0.045},
+    {month:'Feb 2026', sent:63118,  unsubs:169, rate:0.268, flag:'Feast Festival send'},
+    {month:'Mar 2026', sent:219799, unsubs:367, rate:0.167},
+    {month:'Apr 2026', sent:2554,   unsubs:18,  rate:0.705, flag:'Small partner list only (866 contacts)'}
+  ];
+  var maxUnsubRate = Math.max.apply(null, unsubData.map(function(d){return d.rate;}));
+
+  var s = '';
+
+  // Banner
+  s+='<div style="background:var(--seafoam-light);border-radius:var(--radius);padding:10px 16px;margin-bottom:20px;font-size:12px;color:#2A6E5E;display:flex;align-items:center;gap:8px">';
+  s+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+  s+='Email (ActiveCampaign) &mdash; refreshed May 7, 2026 &middot; Trends view: Sep 2025 &rarr; May 2026</div>';
+
+  // ── TREND 1: Automation Audience Growth ─────────────────────────────────────
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s+='<div style="font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px">&#128200; Interest Automation Audience Growth</div>';
+  s+='<div style="font-size:13px;color:var(--ink-light);margin-bottom:20px">Monthly new contacts entering Foodie and History automations</div>';
+
+  // Chart
+  var maxCum = Math.max.apply(null, automationGrowth.map(function(m){return m.foodieCum;}));
+  s+='<div style="display:flex;gap:0;align-items:flex-end;height:140px;margin-bottom:8px;padding:0 4px">';
+  automationGrowth.forEach(function(m,i){
+    var foodieH = maxCum>0?Math.round(m.foodieCum/maxCum*120):0;
+    var histH = maxCum>0?Math.round(m.histCum/maxCum*120):0;
+    s+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:0 3px">';
+    s+='<div style="font-size:10px;color:var(--ink-light);margin-bottom:4px;text-align:center">'+af(m.foodieCum)+'</div>';
+    s+='<div style="width:100%;display:flex;gap:2px;align-items:flex-end">';
+    s+='<div style="flex:1;background:var(--gold);border-radius:3px 3px 0 0;height:'+foodieH+'px;min-height:3px;position:relative" title="Foodie: '+af(m.foodieCum)+' total"></div>';
+    if(m.histCum>0){
+      s+='<div style="flex:1;background:var(--ocean-mid);border-radius:3px 3px 0 0;height:'+histH+'px;min-height:3px;position:relative" title="History: '+af(m.histCum)+' total"></div>';
+    } else {
+      s+='<div style="flex:1"></div>';
+    }
+    s+='</div></div>';
+  });
+  s+='</div>';
+  // X axis labels
+  s+='<div style="display:flex;gap:0;margin-bottom:14px">';
+  automationGrowth.forEach(function(m){
+    s+='<div style="flex:1;text-align:center;font-size:10px;color:var(--ink-light);padding:0 2px">'+m.month+'</div>';
+  });
+  s+='</div>';
+  // Monthly intake table
+  s+='<table class="ac-campaign-table"><thead><tr>';
+  s+='<th>Month</th><th class="metric">Foodie (new)</th><th class="metric">Foodie (total)</th><th class="metric">History (new)</th><th class="metric">History (total)</th>';
+  s+='</tr></thead><tbody>';
+  automationGrowth.forEach(function(m){
+    var isLatest = m.month==='Apr 2026';
+    s+='<tr'+(isLatest?' style="background:var(--gold-light)"':'')+'>';
+    s+='<td style="padding:10px 14px;font-weight:'+(isLatest?'700':'400')+'">'+m.month+(isLatest?' &#9733;':' ')+'</td>';
+    s+='<td class="metric">+'+af(m.foodie)+'</td>';
+    s+='<td class="metric" style="font-weight:600">'+af(m.foodieCum)+'</td>';
+    s+='<td class="metric">'+(m.history>0?'+'+af(m.history):'--')+'</td>';
+    s+='<td class="metric" style="font-weight:600">'+(m.histCum>0?af(m.histCum):'--')+'</td>';
+    s+='</tr>';
+  });
+  s+='</tbody></table>';
+  s+='<div style="font-size:12px;color:var(--ink-light);margin-top:10px;font-style:italic">&#9733; Most recent month &middot; Monthly intake is estimated based on tag activity cadence &mdash; exact entry dates require per-contact API queries</div>';
+  s+='</div>';
+
+  // ── TREND 2: Automation vs Campaign CR ──────────────────────────────────────
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s+='<div style="font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px">&#9889; Automation vs Campaign: Click Rate Gap</div>';
+  s+='<div style="font-size:13px;color:var(--ink-light);margin-bottom:20px">Interest-based automations vs one-time broadcast campaigns</div>';
+
+  s+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">';
+  // Campaign side
+  s+='<div style="background:var(--sand);border-radius:var(--radius);padding:16px 20px;border-left:4px solid var(--ocean-mid)">';
+  s+='<div style="font-size:12px;font-weight:600;color:var(--ocean);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">One-Time Campaigns</div>';
+  s+='<div style="font-size:42px;font-weight:700;color:var(--coral)">1.4%</div>';
+  s+='<div style="font-size:12px;color:var(--ink-light);margin-top:4px">Avg click rate across 22 campaigns</div>';
+  s+='<div style="font-size:12px;color:var(--ink-light);margin-top:8px;padding-top:8px;border-top:1px solid var(--sand-dark)">728K sends &middot; 10K clicks</div>';
+  s+='</div>';
+  // Automation side
+  s+='<div style="background:var(--seafoam-light);border-radius:var(--radius);padding:16px 20px;border-left:4px solid var(--seafoam)">';
+  s+='<div style="font-size:12px;font-weight:600;color:var(--seafoam);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Interest Automations</div>';
+  s+='<div style="font-size:42px;font-weight:700;color:#2d8a4e">3.1%</div>';
+  s+='<div style="font-size:12px;color:var(--ink-mid);margin-top:4px">Avg click rate across all automations</div>';
+  s+='<div style="font-size:12px;color:var(--ink-mid);margin-top:8px;padding-top:8px;border-top:1px solid var(--seafoam-light)">102K sends &middot; 3.1K clicks</div>';
+  s+='</div>';
+  s+='</div>';
+
+  // Gap callout
+  s+='<div style="background:var(--ocean);border-radius:var(--radius);padding:14px 20px;display:flex;align-items:center;gap:16px;margin-bottom:16px">';
+  s+='<div style="font-size:32px;font-weight:700;color:var(--seafoam)">2.2x</div>';
+  s+='<div>';
+  s+='<div style="font-size:15px;font-weight:600;color:var(--white)">Automations outperform campaigns on click rate</div>';
+  s+='<div style="font-size:12px;color:var(--ocean-light);margin-top:4px">Interest-bucketed content drives significantly higher action — validating your segmentation strategy. Foodie alone hits 39.4% CR, History hits 56% CR.</div>';
+  s+='</div></div>';
+
+  // Per-automation breakdown
+  s+='<table class="ac-campaign-table"><thead><tr>';
+  s+='<th>Automation</th><th class="metric">Audience</th><th class="metric">Sends</th><th class="metric">Open Rate</th><th class="metric">Click Rate</th><th class="metric">Open-to-Click</th>';
+  s+='</tr></thead><tbody>';
+  var autoBreakdown=[
+    {name:'Foodie',         audience:1056, sends:3498,  or:52.0, cr:39.4, o2c:75.7},
+    {name:'History',        audience:294,  sends:284,   or:48.9, cr:56.0, o2c:114.4},
+    {name:'Welcome (Wilm)', audience:67971,sends:67863, or:9.2,  cr:1.6,  o2c:17.4},
+    {name:'Welcome (CB)',   audience:40002,sends:8258,  or:7.3,  cr:1.3,  o2c:17.7},
+    {name:'Welcome (KB)',   audience:21501,sends:21255, or:5.7,  cr:1.9,  o2c:32.8},
+    {name:'Welcome (WB)',   audience:25200,sends:1013,  or:8.9,  cr:1.2,  o2c:13.3}
+  ];
+  autoBreakdown.forEach(function(a){
+    s+='<tr>';
+    s+='<td style="padding:10px 14px;font-weight:500">'+a.name+'</td>';
+    s+='<td class="metric">'+af(a.audience)+'</td>';
+    s+='<td class="metric">'+af(a.sends)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(a.or,10,20)+'">'+ap(a.or)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(a.cr,1,10)+'">'+ap(a.cr)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rc(a.o2c,10,30)+'">'+ap(a.o2c)+'</td>';
+    s+='</tr>';
+  });
+  s+='</tbody></table></div>';
+
+  // ── TREND 3: Unsubscribe Rate Trend ─────────────────────────────────────────
+  s+='<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s+='<div style="font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px">&#128680; Unsubscribe Rate by Send Month</div>';
+  s+='<div style="font-size:13px;color:var(--ink-light);margin-bottom:20px">Monitoring audience fatigue across all destination sends</div>';
+
+  // Bar chart
+  s+='<div style="display:flex;gap:0;align-items:flex-end;height:120px;margin-bottom:8px;padding:0 4px">';
+  unsubData.forEach(function(d){
+    var h = maxUnsubRate>0?Math.round(d.rate/maxUnsubRate*100):0;
+    var color = d.rate>=0.2?'var(--coral)':d.rate>=0.1?'var(--gold)':'var(--seafoam)';
+    s+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;padding:0 4px">';
+    s+='<div style="font-size:10px;color:var(--ink-light);text-align:center">'+d.rate.toFixed(3)+'%</div>';
+    s+='<div style="width:100%;background:'+color+';border-radius:3px 3px 0 0;height:'+h+'px;min-height:4px"></div>';
+    s+='</div>';
+  });
+  s+='</div>';
+  s+='<div style="display:flex;gap:0;margin-bottom:16px">';
+  unsubData.forEach(function(d){
+    s+='<div style="flex:1;text-align:center;font-size:10px;color:var(--ink-light);padding:0 2px">'+d.month+'</div>';
+  });
+  s+='</div>';
+
+  // Table
+  s+='<table class="ac-campaign-table"><thead><tr>';
+  s+='<th>Month</th><th class="metric">Total Sent</th><th class="metric">Unsubscribes</th><th class="metric">Unsub Rate</th><th>Notes</th>';
+  s+='</tr></thead><tbody>';
+  unsubData.forEach(function(d){
+    var rStyle = d.rate>=0.2?'color:var(--coral);font-weight:700':d.rate>=0.1?'color:var(--gold);font-weight:600':'color:#2d8a4e;font-weight:600';
+    s+='<tr>';
+    s+='<td style="padding:10px 14px;font-weight:500">'+d.month+'</td>';
+    s+='<td class="metric">'+af(d.sent)+'</td>';
+    s+='<td class="metric">'+af(d.unsubs)+'</td>';
+    s+='<td style="padding:10px 14px;text-align:right;'+rStyle+'">'+d.rate.toFixed(3)+'%</td>';
+    s+='<td style="padding:10px 14px;font-size:12px;color:var(--ink-light)">'+(d.flag||'--')+'</td>';
+    s+='</tr>';
+  });
+  s+='</tbody></table>';
+  s+='<div style="font-size:12px;color:var(--ink-light);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap">';
+  s+='<span><span style="color:#2d8a4e;font-weight:600">&#9632;</span> Below 0.1% (healthy)</span>';
+  s+='<span><span style="color:var(--gold);font-weight:600">&#9632;</span> 0.1-0.2% (monitor)</span>';
+  s+='<span><span style="color:var(--coral);font-weight:600">&#9632;</span> Above 0.2% (investigate)</span>';
+  s+='<span style="margin-left:auto;font-style:italic">Industry benchmark: below 0.5% is acceptable &mdash; you are well within range</span>';
+  s+='</div></div>';
+
+  s+='<div style="height:60px"></div>';
+  return s;
+}
+
+
+// ── SWITCH / UTIL ─────────────────────────────────────────────────────────────
+function showACView(view){
+  var ov = document.getElementById('ac-overview-content');
+  var tr = document.getElementById('ac-trends-content');
+  var tabOv = document.getElementById('ac-tab-overview');
+  var tabTr = document.getElementById('ac-tab-trends');
+  if(!ov||!tr) return;
+  if(view==='trends'){
+    ov.style.display='none';
+    tr.style.display='block';
+    tr.innerHTML = buildACTrends();
+    tabOv.style.background='none'; tabOv.style.color='var(--ink-mid)'; tabOv.style.fontWeight='500';
+    tabTr.style.background='var(--ocean)'; tabTr.style.color='var(--white)'; tabTr.style.fontWeight='600';
+  } else {
+    ov.style.display='block';
+    tr.style.display='none';
+    tabOv.style.background='var(--ocean)'; tabOv.style.color='var(--white)'; tabOv.style.fontWeight='600';
+    tabTr.style.background='none'; tabTr.style.color='var(--ink-mid)'; tabTr.style.fontWeight='500';
+  }
+}
+
+var currentDestLoc = 0; // track which destination is shown within Social Media
+
+function updateTTComparison(){
+  function n(id){ return parseFloat(document.getElementById(id)&&document.getElementById(id).value)||0; }
+  function pctChange(curr,prev){ if(!prev) return null; return ((curr-prev)/prev*100); }
+  var cv=n('tt-curr-views'),pv=n('tt-prev-views');
+  var cf=n('tt-curr-fol'),pf=n('tt-prev-fol');
+  var row=document.getElementById('tt-comparison-row');
+  if(!row) return;
+  var parts=[];
+  if(pv){
+    var vd=pctChange(cv,pv);
+    var vColor=vd>=0?'#2d8a4e':'var(--coral)';
+    parts.push('<span>Video Views: <strong style="color:'+vColor+'">'+(vd>=0?'+':'')+vd.toFixed(1)+'%</strong> vs Mar</span>');
+  }
+  if(pf){
+    var fd=pctChange(cf,pf);
+    var fColor=fd>=0?'#2d8a4e':'var(--coral)';
+    parts.push('<span>Net Follows: <strong style="color:'+fColor+'">'+(fd>=0?'+':'')+fd.toFixed(1)+'%</strong> vs Mar</span>');
+  }
+  row.innerHTML=parts.length?parts.join('<span style="color:var(--sand-dark);margin:0 4px">|</span>'):'Enter March numbers above to see month-over-month comparison.';
+}
+
+
+function buildLinkedInPage(){
+  function af(v){ v=parseFloat(v)||0; return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'K':Math.round(v).toLocaleString(); }
+  function ap(v){ return isNaN(parseFloat(v))?'--':(+v).toFixed(1)+'%'; }
+  function rc(v,lo,hi){ v=parseFloat(v); if(isNaN(v)) return ''; return 'color:'+(v>=hi?'#2d8a4e':v>=lo?'var(--gold)':'var(--coral)')+';font-weight:600'; }
+
+  var s = '';
+
+  // Banner
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:10px 16px;margin-bottom:20px;font-size:12px;color:var(--ink-mid);display:flex;align-items:center;gap:8px;border:1px solid var(--sand-dark)">';
+  s += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  s += 'Data read from LinkedIn Analytics via Claude in Chrome &mdash; Apr 1&ndash;May 5, 2026 &middot; <strong style="margin-left:4px">Wilmington and Beaches Convention &amp; Visitors Bureau</strong>';
+  s += '</div>';
+
+  // ── Summary cards ─────────────────────────────────────────────────────────
+  s += '<div class="summary-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">';
+  s += '<div class="scard"><div class="scard-label">Total Followers</div><div class="scard-val">1,328</div><div style="font-size:11px;color:var(--seafoam);margin-top:4px">&#9650; +36 new (35 days)</div></div>';
+  s += '<div class="scard"><div class="scard-label">Impressions</div><div class="scard-val">15,682</div><div style="font-size:11px;color:var(--seafoam);margin-top:4px">&#9650; +8.8% vs prior period</div></div>';
+  s += '<div class="scard"><div class="scard-label">Organic Impressions</div><div class="scard-val">5,203</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">33.2% of total</div></div>';
+  s += '<div class="scard"><div class="scard-label">Engagement Rate</div><div class="scard-val" style="color:#2d8a4e;font-weight:700">1.75%</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">274 engagements</div></div>';
+  s += '<div class="scard"><div class="scard-label">Page Views</div><div class="scard-val">161</div><div style="font-size:11px;color:var(--seafoam);margin-top:4px">&#9650; +13.4% vs prior period</div></div>';
+  s += '</div>';
+
+  // ── Monthly comparison entry ───────────────────────────────────────────────
+  s += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 20px;margin-bottom:24px">';
+  s += '<div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px">Monthly Comparison <span style="font-size:11px;font-weight:400;color:var(--ink-light)">Enter last month to see growth</span></div>';
+  s += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  var liFields = [
+    {label:'Apr Impressions', id:'li-curr-imp', val:'15682'},
+    {label:'Mar Impressions', id:'li-prev-imp', val:''},
+    {label:'Apr New Followers', id:'li-curr-fol', val:'36'},
+    {label:'Mar New Followers', id:'li-prev-fol', val:''}
+  ];
+  liFields.forEach(function(f){
+    s += '<div><div style="font-size:11px;color:var(--ink-light);margin-bottom:4px">'+f.label+'</div>';
+    s += '<input id="'+f.id+'" type="number" value="'+f.val+'" placeholder="0" oninput="updateLIComparison()" style="width:100%;padding:8px 10px;border:1px solid var(--sand-dark);border-radius:var(--radius);font-family:inherit;font-size:13px;background:var(--white);color:var(--ink);outline:none">';
+    s += '</div>';
+  });
+  s += '</div>';
+  s += '<div id="li-comparison-row" style="display:flex;gap:20px;margin-top:12px;font-size:13px;color:var(--ink-light)">Enter March numbers above to see month-over-month comparison.</div>';
+  s += '</div>';
+
+  // ── Engagement breakdown ───────────────────────────────────────────────────
+  s += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s += '<div class="ac-section-title" style="font-size:16px;margin-bottom:16px">';
+  s += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  s += ' Content Engagement (Apr 2026)</div>';
+  s += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">';
+  var engMetrics = [
+    {label:'Reactions', val:'246', change:'&#9650; 811.1%', color:'var(--seafoam)'},
+    {label:'Comments', val:'19',  change:'&#9650; 171.4%', color:'var(--seafoam)'},
+    {label:'Reposts',  val:'9',   change:'0%',             color:'var(--ink-light)'},
+    {label:'Total Engagements', val:'274', change:'vs 15,682 impressions', color:'var(--ink-light)'}
+  ];
+  engMetrics.forEach(function(m){
+    s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px">';
+    s += '<div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">'+m.label+'</div>';
+    s += '<div style="font-size:26px;font-weight:700;color:var(--ink)">'+m.val+'</div>';
+    s += '<div style="font-size:11px;color:'+m.color+';margin-top:3px">'+m.change+'</div>';
+    s += '</div>';
+  });
+  s += '</div>';
+
+  // Engagement rate bar
+  s += '<div style="margin-top:4px">';
+  s += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+  s += '<span style="font-size:13px;color:var(--ink)">Engagement rate (engagements / impressions)</span>';
+  s += '<span style="font-size:16px;font-weight:700;color:#2d8a4e">1.75%</span>';
+  s += '</div>';
+  s += '<div style="background:var(--sand-dark);border-radius:20px;height:10px;overflow:hidden">';
+  s += '<div style="background:#2d8a4e;width:17.5%;height:100%;border-radius:20px"></div>';
+  s += '</div>';
+  s += '<div style="font-size:11px;color:var(--ink-light);margin-top:6px">LinkedIn B2B benchmark: 0.5%&ndash;2% is typical for company pages &mdash; you are within healthy range</div>';
+  s += '</div></div>';
+
+  // ── Visitor analytics ──────────────────────────────────────────────────────
+  s += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s += '<div class="ac-section-title" style="font-size:16px;margin-bottom:16px">';
+  s += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  s += ' Page Visitors (Apr 2026)</div>';
+  s += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Page Views</div><div style="font-size:26px;font-weight:700;color:var(--ink)">161</div><div style="font-size:11px;color:var(--seafoam);margin-top:3px">&#9650; +13.4% vs prior period</div></div>';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Unique Visitors</div><div style="font-size:26px;font-weight:700;color:var(--ink)">91</div><div style="font-size:11px;color:var(--seafoam);margin-top:3px">&#9650; +21.3% vs prior period</div></div>';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Button Clicks</div><div style="font-size:26px;font-weight:700;color:var(--ink)">0</div><div style="font-size:11px;color:var(--ink-light);margin-top:3px">No CTA clicks this period</div></div>';
+  s += '</div>';
+  s += '<div style="background:var(--sand);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ink-mid)">';
+  s += '<strong style="color:var(--ink)">Notable visitor types:</strong> Financial services professionals (Merrill Lynch) and academic contacts (UNCW) visible in Premium visitor preview &mdash; typical for a CVB/economic development audience.';
+  s += '</div></div>';
+
+  // ── Follower growth ────────────────────────────────────────────────────────
+  s += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:20px">';
+  s += '<div class="ac-section-title" style="font-size:16px;margin-bottom:16px">';
+  s += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>';
+  s += ' Follower Growth (Apr 2026)</div>';
+  s += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Followers</div><div style="font-size:26px;font-weight:700;color:var(--ink)">1,328</div></div>';
+  s += '<div style="background:var(--seafoam-light);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:#2A6E5E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">New Followers (35 days)</div><div style="font-size:26px;font-weight:700;color:#2d8a4e">+36</div><div style="font-size:11px;color:#2A6E5E;margin-top:3px">&#9650; +56.5% vs prior period</div></div>';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Avg New/Day</div><div style="font-size:26px;font-weight:700;color:var(--ink)">~1</div><div style="font-size:11px;color:var(--ink-light);margin-top:3px">1&ndash;4 new per day</div></div>';
+  s += '</div></div>';
+
+  // ── Key insights ───────────────────────────────────────────────────────────
+  s += '<div style="background:var(--ocean);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px">';
+  s += '<div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:12px">&#128161; Key Insights</div>';
+  var insights = [
+    "Reactions jumped 811% vs prior period &mdash; a significant signal that April content resonated strongly with your LinkedIn audience. Likely driven by the SITP and Azalea Festival posts.",
+    "Organic impressions are 33.2% of total (5,203 of 15,682) &mdash; LinkedIn typically runs ~20-30% organic for company pages, so you are performing well without paid boost.",
+    "1.75% engagement rate is healthy for a destination/CVB LinkedIn page. B2B benchmarks sit at 0.5-2%, so you are near the top of the range.",
+    "Unique visitor growth of 21.3% suggests increasing awareness of the CVB brand on LinkedIn &mdash; relevant for industry partner and MICE (meetings, incentives, conferences) audience.",
+    "Zero CTA button clicks may indicate the page CTA (if set) is not compelling to the audience &mdash; consider updating to a strong call to action like Visit Website or Download Guide."
+  ];
+  insights.forEach(function(insight,i){
+    s += '<div style="display:flex;gap:10px;margin-bottom:'+(i<insights.length-1?'10px':'0')+'">';
+    s += '<span style="color:var(--seafoam);font-weight:700;flex-shrink:0">'+(i+1)+'.</span>';
+    s += '<span style="font-size:13px;color:var(--ocean-light);line-height:1.5">'+insight+'</span>';
+    s += '</div>';
+  });
+  s += '</div>';
+
+  s += '<div style="height:60px"></div>';
+  return s;
+}
+
+function updateLIComparison(){
+  function n(id){ return parseFloat(document.getElementById(id)&&document.getElementById(id).value)||0; }
+  var ci=n('li-curr-imp'), pi=n('li-prev-imp');
+  var cf=n('li-curr-fol'), pf=n('li-prev-fol');
+  var row=document.getElementById('li-comparison-row');
+  if(!row) return;
+  var parts=[];
+  if(pi){
+    var id=((ci-pi)/pi*100);
+    parts.push('<span>Impressions: <strong style="color:'+(id>=0?'#2d8a4e':'var(--coral)')+'">'+(id>=0?'+':'')+id.toFixed(1)+'%</strong> vs prior month</span>');
+  }
+  if(pf){
+    var fd=((cf-pf)/pf*100);
+    parts.push('<span>New Followers: <strong style="color:'+(fd>=0?'#2d8a4e':'var(--coral)')+'">'+(fd>=0?'+':'')+fd.toFixed(1)+'%</strong> vs prior month</span>');
+  }
+  row.innerHTML=parts.length?parts.join('<span style="color:var(--sand-dark);margin:0 8px">|</span>'):'Enter March numbers above to see month-over-month comparison.';
+}
+
+
+function buildTikTokPage(){
+  function af(v){ v=parseFloat(v)||0; return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'K':Math.round(v).toLocaleString(); }
+  function ap(v){ return isNaN(parseFloat(v))?'--':(+v).toFixed(1)+'%'; }
+  function rc(v,lo,hi){ v=parseFloat(v); if(isNaN(v)) return ''; return 'color:'+(v>=hi?'#2d8a4e':v>=lo?'var(--gold)':'var(--coral)')+';font-weight:600'; }
+  function hbar(pct, color, h){
+    h=h||10;
+    return '<div style="background:var(--sand-dark);border-radius:20px;height:'+h+'px;overflow:hidden;flex:1"><div style="background:'+color+';width:'+Math.min(pct,100)+'%;height:100%;border-radius:20px"></div></div>';
+  }
+
+  var topPosts = [
+    {rank:1, caption:'Meredith Blake as Queen Azalea - Congratulations and thank you to @elaine4animals', views:27000, likes:0, comments:0, shares:0, posted:'1mo ago', allViews:27000},
+    {rank:2, caption:'Britts Donuts in Carolina Beach re-opens on April 3 at 4pm - How many will you eat this time?', views:37000, likes:0, comments:0, shares:0, posted:'2mo ago', allViews:37000},
+    {rank:3, caption:'Britts Donuts is open! The 2026 grand re-opening of this iconic donut shop', views:21000, likes:0, comments:0, shares:0, posted:'1mo ago', allViews:21000},
+    {rank:4, caption:'Only 1 month away! Watch pups shred at Carolina Beach Pier on May 16 from 9:30am', views:30000, likes:0, comments:0, shares:0, posted:'3w ago', allViews:30000},
+    {rank:5, caption:'Yes, this is every Thursday night during the summer. Why? Just because - Amusement rides open at 5pm', views:16000, likes:0, comments:0, shares:0, posted:'Aug 2023', allViews:124000},
+    {rank:6, caption:"Wilmington's only foodie and drink festival is just 25 days away. At Feast Wilmington...", views:12000, likes:0, comments:0, shares:0, posted:'2mo ago', allViews:12000},
+    {rank:7, caption:'Elaine Hendrix has been announced by the North Carolina Azalea Festival as the 2026 Azalea Queen', views:11000, likes:0, comments:0, shares:0, posted:'2mo ago', allViews:18000},
+    {rank:8, caption:'Just a baby and her friends at Airlie Gardens - #VisitWilmingtonNC', views:11000, likes:0, comments:0, shares:0, posted:'1mo ago', allViews:11000},
+    {rank:9, caption:"It'll be here before you know it - #VisitCarolinaBeachNC #CarolinaBeachNC #Spring", views:11000, likes:0, comments:0, shares:0, posted:'3mo ago', allViews:15000},
+    {rank:10, caption:'Trask Family Farms is NOW OPEN for the season from Tuesday thru Sunday, Just 10 minutes from...', views:10000, likes:0, comments:0, shares:0, posted:'1mo ago', allViews:11000}
+  ];
+
+  var s = '';
+
+  // Data source banner
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:10px 16px;margin-bottom:20px;font-size:12px;color:var(--ink-mid);display:flex;align-items:center;gap:8px;border:1px solid var(--sand-dark)">';
+  s += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+  s += 'Data read from TikTok Studio via Claude in Chrome &mdash; Last 47 days (Apr&ndash;May 2026) &middot; <strong style="margin-left:4px">Account: wilmingtoncoast (shared across all destinations)</strong>';
+  s += '</div>';
+
+  // ── Summary cards ────────────────────────────────────────────────────────────
+  s += '<div class="summary-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:28px">';
+  s += '<div class="scard"><div class="scard-label">Total Followers</div><div class="scard-val">6.4K</div><div style="font-size:11px;color:var(--seafoam);margin-top:4px">&#9650; +999 net new (Apr)</div></div>';
+  s += '<div class="scard"><div class="scard-label">Total Viewers</div><div class="scard-val">138K</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">Apr 2026</div></div>';
+  s += '<div class="scard"><div class="scard-label">Video Views</div><div class="scard-val">76K</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">Apr 2026 &mdash; enter Mar to compare</div></div>';
+  s += '<div class="scard"><div class="scard-label">Likes</div><div class="scard-val">--</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">Pull from Apr export</div></div>';
+  s += '<div class="scard"><div class="scard-label">Shares</div><div class="scard-val">--</div><div style="font-size:11px;color:var(--ink-light);margin-top:4px">Pull from Apr export</div></div>';
+  s += '</div>';
+  // Manual entry row for monthly comparison
+  s += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 20px;margin-bottom:24px">';
+  s += '<div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px">Monthly Comparison <span style="font-size:11px;font-weight:400;color:var(--ink-light)">Enter last month to see growth</span></div>';
+  s += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">';
+  var ttFields=[
+    {label:'Apr Video Views',id:'tt-curr-views',val:'76000'},
+    {label:'Mar Video Views',id:'tt-prev-views',val:''},
+    {label:'Apr Net Follows',id:'tt-curr-fol',val:'999'},
+    {label:'Mar Net Follows',id:'tt-prev-fol',val:''}
+  ];
+  ttFields.forEach(function(f){
+    s += '<div><div style="font-size:11px;color:var(--ink-light);margin-bottom:4px">'+f.label+'</div>';
+    s += '<input id="'+f.id+'" type="number" value="'+f.val+'" placeholder="0" oninput="updateTTComparison()" style="width:100%;padding:8px 10px;border:1px solid var(--sand-dark);border-radius:var(--radius);font-family:inherit;font-size:13px;background:var(--white);color:var(--ink);outline:none">';
+    s += '</div>';
+  });
+  s += '</div>';
+  s += '<div id="tt-comparison-row" style="display:flex;gap:20px;margin-top:12px;font-size:13px;color:var(--ink-light)">Enter March numbers above to see month-over-month comparison.</div>';
+  s += '</div>';
+
+
+    // ── Follower Growth ──────────────────────────────────────────────────────────
+  s += '<div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:28px">';
+  s += '<div class="ac-section-title" style="font-size:16px;margin-bottom:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg> Follower Growth</div>';
+  s += '<div style="font-size:13px;color:var(--ink-light);margin-bottom:16px">Last 47 days</div>';
+  s += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total Followers</div><div style="font-size:28px;font-weight:700;color:var(--ink)">6.4K</div></div>';
+  s += '<div style="background:var(--seafoam-light);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:#2A6E5E;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Net New (47 days)</div><div style="font-size:28px;font-weight:700;color:#2d8a4e">+999</div></div>';
+  s += '<div style="background:var(--sand);border-radius:var(--radius);padding:14px 16px"><div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Most Active Hour</div><div style="font-size:28px;font-weight:700;color:var(--ink)">3pm</div><div style="font-size:11px;color:var(--ink-light)">followers most active</div></div>';
+  s += '</div></div>';
+
+  // ── Top Posts ────────────────────────────────────────────────────────────────
+  s += '<div class="platform-section">';
+  s += '<div class="platform-header">';
+  s += '<div class="platform-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 20V10M12 20V4M6 20v-6"/></svg> Top Posts by Views <span class="badge-organic">Last 60 days</span></div>';
+  s += '</div>';
+  s += '<table class="data-table"><thead><tr>';
+  s += '<th style="width:32px">#</th>';
+  s += '<th>Caption</th>';
+  s += '<th class="metric">Views (period)</th>';
+  s += '<th class="metric">All-Time Views</th>';
+  s += '<th class="metric">Posted</th>';
+  s += '</tr></thead><tbody>';
+  topPosts.forEach(function(p){
+    var isMilestone = p.allViews >= 100000;
+    s += '<tr'+(isMilestone?' style="background:var(--gold-light)"':'')+'>';
+    s += '<td style="padding:10px 14px;font-weight:700;color:var(--ink-light)">'+p.rank+'</td>';
+    s += '<td style="padding:10px 14px;font-size:12px;color:var(--ink);max-width:320px">'+p.caption.substring(0,80)+(p.caption.length>80?'...':'')+(isMilestone?' <span style="font-size:10px;background:var(--gold);color:white;padding:1px 6px;border-radius:8px;margin-left:4px">&#11088; 100K+</span>':'')+'</td>';
+    s += '<td class="metric">'+af(p.views)+'</td>';
+    s += '<td class="metric" style="font-weight:700">'+af(p.allViews)+'</td>';
+    s += '<td style="padding:10px 14px;font-size:12px;color:var(--ink-light);white-space:nowrap">'+p.posted+'</td>';
+    s += '</tr>';
+  });
+  s += '</tbody></table>';
+  s += '<div style="font-size:12px;color:var(--ink-light);margin-top:8px;padding:0 2px">&#11088; Highlights posts with 100K+ all-time views &middot; Likes, comments and shares per post require clicking into each video in TikTok Studio</div>';
+  s += '</div>';
+
+  // ── Key Insights ─────────────────────────────────────────────────────────────
+  s += '<div style="background:var(--ocean);border-radius:var(--radius);padding:20px 24px;margin-top:8px;margin-bottom:24px">';
+  s += '<div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:12px">&#128161; Key Insights</div>';
+  var insights = [
+    'Search drives 35.7% of views &mdash; unusually high for TikTok (avg is ~5-10%). Your content is being discovered, not just fed. Consider optimizing captions and hashtags further for search.',
+    'Followers skew female (79%) and 35-44 is your largest age group (28.8%) &mdash; older than TikTok typical demographic. Content resonating with a more mature travel planning audience.',
+    'The 2023 amusement rides video has 124K all-time views &mdash; your only 100K+ post. Evergreen seasonal content has long tail value.',
+    "Net +999 followers in 47 days is strong growth. Britt's Donuts posts and the Carolina Beach dog surfing reel are likely key drivers.",
+    '99.5% of viewers are US-based &mdash; highly local/domestic audience, well-aligned with CVB goals.'
+  ];
+  insights.forEach(function(insight,i){
+    s += '<div style="display:flex;gap:10px;margin-bottom:'+(i<insights.length-1?'10px':'0')+'">';
+    s += '<span style="color:var(--seafoam);font-weight:700;flex-shrink:0">'+(i+1)+'.</span>';
+    s += '<span style="font-size:13px;color:var(--ocean-light);line-height:1.5">'+insight+'</span>';
+    s += '</div>';
+  });
+  s += '</div>';
+
+  s += '<div style="height:60px"></div>';
+  return s;
+}
+
+
+function switchTab(idx,btn){
+  document.querySelectorAll('.loc-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  if(idx===1){
+    currentLoc=4;
+    document.getElementById('main').innerHTML=buildACPage();
+  } else {
+    currentLoc=currentDestLoc;
+    document.getElementById('main').innerHTML=buildSocialPage();
+  }
+}
+
+function switchDest(idx,btn){
+  document.querySelectorAll('.dest-tab').forEach(function(t){
+    t.style.background='var(--sand)';
+    t.style.color='var(--ink-mid)';
+    t.style.fontWeight='500';
+    t.style.borderBottom='2px solid transparent';
+  });
+  btn.style.background='var(--white)';
+  btn.style.color='var(--ink)';
+  btn.style.fontWeight='700';
+  btn.style.borderBottom='2px solid var(--ocean)';
+  currentDestLoc=idx;
+  currentLoc=idx;
+  renderDestContent();
+}
+
+function buildSocialPage(){
+  var destNames=['Wilmington (Meta)','Wrightsville Beach (Meta)','Carolina Beach (Meta)','Kure Beach (Meta)','TikTok','LinkedIn'];
+  var destEmojis=['&#128205;','&#127754;','&#127958;','&#127796;','&#127926;','&#128188;'];
+  var s='';
+  // Sub-tab pills
+  s+='<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">';
+  destNames.forEach(function(name,i){
+    var active=i===currentDestLoc;
+    s+='<button class="dest-tab" onclick="switchDest('+i+',this)" style="';
+    s+='padding:8px 18px;border-radius:20px;font-size:13px;font-family:inherit;cursor:pointer;transition:all .15s;border:1.5px solid var(--sand-dark);';
+    s+=active?'background:var(--white);color:var(--ink);font-weight:700;border-bottom:2px solid var(--ocean);border-color:var(--ocean);':'background:var(--sand);color:var(--ink-mid);font-weight:500;';
+    s+='">'+destEmojis[i]+' '+name+'</button>';
+  });
+  s+='</div>';
+  s+='<div id="dest-content"></div>';
+  return s;
+}
+
+function buildMetaInsights(loc){
+  var insights = {
+    'Wilmington': [
+      "The Summer I Turned Pretty content dominated April &mdash; the SITP filming FB post drove 701,920 views (500K+ milestone) and the SITP cast IG Reel hit 7.0% engagement rate, your top performer this month.",
+      "Facebook viewers (869,200) vastly outpaced IG views (241,195) in April, largely driven by SITP viral content. Organic FB reach is unusually strong this month &mdash; capitalize by posting SITP follow-up content.",
+      "Partner content drove 101,451 additional IG views with @lauramahachek leading at 8.18% engagement rate &mdash; higher than any owned content. Expanding the partner tagging strategy could significantly amplify reach.",
+      "Instagram follows from posts (236) and FB follows (1,290) both trended up in April vs March &mdash; SITP content is driving meaningful audience growth, not just impressions.",
+      "IG engagement rate (3.77%) outperforms FB engagement rate (1.00%) despite FB having far higher reach &mdash; typical for Meta platforms. Focus creative energy on IG for engagement, FB for awareness."
+    ],
+    'Wrightsville Beach': [
+      "The fishing pier Photo post achieved 7.08% engagement rate &mdash; your top performer and a rare case of a static photo outperforming Reels. Scenic, simple imagery resonates with this audience.",
+      "The Farmers Market Reel (crossposted IG+FB) achieved 6.70% engagement rate with 18,221 views &mdash; community event content is a strong format for Wrightsville Beach.",
+      "April IG views (75,272) represent a 56.7% increase vs March (48,039) &mdash; strong month-over-month growth driven by the spring content push.",
+      "FB crossposted content (33,656 viewers) is performing but March FB data was minimal (238 interactions, 0 viewers). April saw a significant FB activation. Continue crossposting strategy.",
+      "Follows from posts remain modest (IG: 54, FB: 22) relative to reach &mdash; consider adding stronger follow CTAs in captions to convert viewers to followers."
+    ],
+    'Carolina Beach': [
+      "The dog surfing Reel is your standout at 7.51% engagement rate and 28,392 views &mdash; event-based, fun, and highly shareable content outperforms everything else. Double down on this format.",
+      "March was a significantly stronger month than April for Carolina Beach (186,783 IG views vs 74,851 in April, 10,576 interactions vs 4,007) &mdash; driven by the Britt's Donuts viral posts. Seasonal reopening content is your highest-leverage opportunity.",
+      "Britt's Donuts posts from March hit the 25K+ and 50K+ milestones on TikTok as well as strong Instagram numbers &mdash; this single event is your most powerful annual content moment. Plan content series around it in 2027.",
+      "Wings Over Carolina Beach Air Show Reel drove 4.58% engagement &mdash; aviation event content performs well. Consider earlier promotional content in 2027 to capture more views before the event.",
+      "FB engagement (790 interactions) is low relative to viewers (44,395) at 1.78% &mdash; below the beach destination average. FB content strategy for Carolina Beach may need refreshing."
+    ],
+    'Kure Beach': [
+      "The fresh seafood Reel leads at 5.16% engagement rate &mdash; food and lifestyle content consistently outperforms destination overview content for Kure Beach. Lean into this.",
+      "April IG views (76,093) dropped vs March (105,208) &mdash; a 27.6% decline. March content likely benefited from crossposted reach. April original content did not maintain that pace.",
+      "The crossposted Carousel (All paths lead here) generated 25,859 views &mdash; your highest-reach post despite lower engagement (1.59%). Crossposting strategy is working for raw reach.",
+      "Kure Beach has the smallest follower base and lowest engagement totals of the four destinations &mdash; but maintains healthy engagement rates (IG: 2.37%, FB: 2.15%). The audience is small but engaged.",
+      "Net follows from posts (IG: 50, FB: 25) are proportionally strong relative to list size. Focus on consistent posting cadence to sustain this follower growth trajectory."
+    ]
+  };
+
+  var locInsights = insights[loc] || insights['Wilmington'];
+  // Strip (Meta) suffix for lookup
+  var cleanLoc = loc.replace(' (Meta)','');
+  locInsights = insights[cleanLoc] || insights['Wilmington'];
+
+  if(!locInsights) return '';
+
+  var s = '<div style="background:var(--ocean);border-radius:var(--radius);padding:20px 24px;margin-top:8px;margin-bottom:24px">';
+  s += '<div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:12px">&#128161; Key Insights &mdash; '+cleanLoc+' (Apr 2026)</div>';
+  locInsights.forEach(function(insight,i){
+    s += '<div style="display:flex;gap:10px;margin-bottom:'+(i<locInsights.length-1?'10px':'0')+'">';
+    s += '<span style="color:var(--seafoam);font-weight:700;flex-shrink:0">'+(i+1)+'.</span>';
+    s += '<span style="font-size:13px;color:var(--ocean-light);line-height:1.5">'+insight+'</span>';
+    s += '</div>';
+  });
+  s += '</div>';
+  return s;
+}
+
+
+function renderDestContent(){
+  var destEl=document.getElementById('dest-content');
+  if(!destEl) return;
+  // TikTok is its own view
+  if(currentDestLoc===4){
+    destEl.innerHTML=buildTikTokPage();
+    return;
+  }
+  if(currentDestLoc===5){
+    destEl.innerHTML=buildLinkedInPage();
+    return;
+  }
+  // Build the platform sections directly into dest-content
+  var loc=LOCS[currentDestLoc];
+  var d=store[loc];
+  var s='';
+  s+='<div class="import-bar"><p><strong>How to use:</strong> Enter data below or share your Meta Business Suite screen with Claude.</p><div>';
+  s+='<span class="step-pill"><span class="step-num">1</span>Filter: Organic only</span>';
+  s+='<span class="step-pill"><span class="step-num">2</span>Exclude Stories</span>';
+  s+='<span class="step-pill"><span class="step-num">3</span>Share screen with Claude</span>';
+  s+='</div></div>';
+  s+='<div class="summary-row">';
+  s+='<div class="scard"><div class="scard-label">Total Views / Viewers</div><div class="scard-val" id="sum-views">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Total Interactions</div><div class="scard-val" id="sum-int">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Follows from Posts</div><div class="scard-val" id="sum-fol">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Total Followers (IG+FB)</div><div class="scard-val" id="sum-total-fol">--</div></div>';
+  s+='<div class="scard"><div class="scard-label">Overall Engagement Rate</div><div class="scard-val" id="sum-eng">--</div></div>';
+  s+='</div>';
+  s+=buildPlatSection('ig',d);
+  s+=buildPlatSection('fb',d);
+  if(loc==='Wilmington') s+=buildPartnerSection();
+  s+=buildCharts();
+  s+=buildTopPosts(loc);
+  s+=buildMilestones(loc);
+  s += buildMetaInsights(loc);
+  destEl.innerHTML=s;
+  // Wire inputs
+  ['ig','fb'].forEach(function(plt){
+    var isFB=plt==='fb';
+    var map=[
+      [plt+'-view-input',  isFB?'viewers':'views'],
+      [plt+'-int-input',   'interactions'],
+      [plt+'-fol-input',   'follows'],
+      [plt+'-tfol-input',  'total_followers'],
+      [plt+'-pview-input', isFB?'prev_viewers':'prev_views'],
+      [plt+'-pint-input',  'prev_interactions'],
+      [plt+'-pfol-input',  'prev_follows']
+    ];
+    map.forEach(function(pair){
+      var el=document.getElementById(pair[0]);
+      if(!el) return;
+      el.addEventListener('input',function(){ store[LOCS[currentLoc]][plt][pair[1]]=this.value; recompute(); });
+    });
+    var ne=document.getElementById(plt+'-notes');
+    if(ne) ne.addEventListener('input',function(){ store[LOCS[currentLoc]][plt].notes=this.value; });
+  });
+  recompute();
+  if(loc==='Wilmington') recomputePartner();
+}
+
+function updateLabel(){
+  var v=document.getElementById('period-sel').value;
+  document.getElementById('export-lbl').textContent='Coastal Marketing - '+v+' - Organic feed posts only';
+}
+
+function clearTab(){
+  if(currentLoc===4) return;
+  var loc=LOCS[currentLoc];
+  store[loc]={
+    ig:{views:'',interactions:'',follows:'',total_followers:'',prev_views:'',prev_interactions:'',prev_follows:'',notes:''},
+    fb:{viewers:'',interactions:'',follows:'',total_followers:'',prev_viewers:'',prev_interactions:'',prev_follows:'',notes:''}
+  };
+  renderDestContent();
+}
+
+function exportCSV(){
+  var csv='Location,Platform,Period,Views/Viewers,Interactions,Follows,Eng Rate,Views Growth,Int Growth,Follows Growth\n';
+  LOCS.forEach(function(loc){
+    ['ig','fb'].forEach(function(plt){
+      var d=store[loc][plt];
+      var isFB=plt==='fb';
+      var v=isFB?(d.viewers||0):(d.views||0);
+      var pv=isFB?(d.prev_viewers||0):(d.prev_views||0);
+      var eng=n(v)>0?((n(d.interactions)/n(v))*100).toFixed(2)+'%':'--';
+      var vd=delta(v,pv),id2=delta(d.interactions,d.prev_interactions),fd=delta(d.follows,d.prev_follows);
+      csv+='"'+loc+'","'+plt.toUpperCase()+'","This month",'+( v||0)+','+(d.interactions||0)+','+(d.follows||0)+',"'+eng+'","'+vd.txt+'","'+id2.txt+'","'+fd.txt+'"\n';
+    });
+  });
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='coastal-marketing-report.csv';
+  a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildPage();
+</script>
+</body>
+</html>
